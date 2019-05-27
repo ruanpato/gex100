@@ -8,7 +8,7 @@ Repositório criado para armazenar meus exercícios e trabalho referentes ao com
 
 ### Built With ###
 
-* [gcc](https://gcc.gnu.org/) - GNU gcc and g++ compiler
+* [GNU-GCC](https://gcc.gnu.org/) - GNU gcc and g++ compiler
 * [MARS](http://courses.missouristate.edu/KenVollmar/mars/) - MIPS Assembler and Runtime Simulator
 * [Python](https://python.org/) - Python Interpreter
 
