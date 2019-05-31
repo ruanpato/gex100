@@ -18,6 +18,8 @@ Padrões de codificação de instruções:
 
 
 |   op   	|   rs   	|   rt   	|   rd   	|  shamt 	|  funct 	|
+
+
   6 bits 	  5 bits 	  5 bits 	  5 bits 	  5 bits 	  6 bits 	 
 
 
