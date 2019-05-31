@@ -3,8 +3,8 @@
 Diretório criado para armazenar informações sobre Assembly MIPS.
 
 ## Sumário ##
-[1.](#1-instru%C3%A7%C3%B5es-assembly) Instruções Assembly.  
-[2.](#2-conven%C3%A7%C3%A3o-de-registradores-do-mips) Conveção de registradores.
+**[1.](#1-instru%C3%A7%C3%B5es-assembly) Instruções Assembly.**  
+**[2.](#2-conven%C3%A7%C3%A3o-de-registradores-do-mips) Conveção de registradores.**
 
 ### Ferramentas utilizadas ###
 
