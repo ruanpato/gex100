@@ -17,6 +17,7 @@ Padrões de codificação de instruções:
 **R:** Instruções com operandos tipo registradores:
 
 
+|:------:	|:------:	|:------:	|:------:	|:------:	|:------:	|
 |   op   	|   rs   	|   rt   	|   rd   	|  shamt 	|  funct 	|
 
 
