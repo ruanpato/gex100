@@ -12,6 +12,13 @@ Diretório criado para armazenar informações sobre Assembly MIPS.
 * [MARS](http://courses.missouristate.edu/KenVollmar/mars/) - MIPS Assembler and Runtime Simulator
 
 ## 1. Instruções Assembly ##
+MIPS codifica todas instruçẽs em 32 bits.  
+Padrões de codificação de instruções:  
+**R:** Instruções com operandos tipo registradores:  
+|   op   	|   rs   	|   rt   	|   rd   	|  shamt 	|  funct 	|
+|:------:	|:------:	|:------:	|:------:	|:------:	|:------:	|
+| 6 bits 	| 5 bits 	| 5 bits 	| 5 bits 	| 5 bits 	| 6 bits 	|  
+
 
 ## 2. Convenção de registradores do MIPS ##
 |   Nome  	| Número 	|                  Uso                  	| Preservado em chamadas ? 	|
