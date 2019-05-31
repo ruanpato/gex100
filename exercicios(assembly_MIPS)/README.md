@@ -14,7 +14,7 @@ Diretório criado para armazenar informações sobre Assembly MIPS.
 ## 1. Instruções Assembly ##
 MIPS codifica todas instruçẽs em 32 bits.  
 Padrões de codificação de instruções:  
-**R:** Instruções com operandos tipo registradores:  
+**R:** Instruções com operandos tipo registradores:    
 |   op   	|   rs   	|   rt   	|   rd   	|  shamt 	|  funct 	|
 |:------:	|:------:	|:------:	|:------:	|:------:	|:------:	|
 | 6 bits 	| 5 bits 	| 5 bits 	| 5 bits 	| 5 bits 	| 6 bits 	|  
