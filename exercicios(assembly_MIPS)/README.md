@@ -23,12 +23,16 @@ Padrões de codificação de instruções:
 
 
 **I:** Para instruções com operandos imediatos:
+
+
 |   op   	|   rs   	|   rt   	|   imm   	|
 |:------:	|:------:	|:------:	|:-------:	|
 | 6 bits 	| 5 bits 	| 5 bits 	| 16 bits 	|
 
 
 **J:** Para instruçõesde saltos incondicionais(Jump):
+
+
 |   op   	|   addr  	|
 |:------:	|:-------:	|
 | 6 bits 	| 26 bits 	|
@@ -41,6 +45,8 @@ Padrões de codificação de instruções:
 .tg .td{text-align:center;vertical-align:top}
 h5 {text-align:center;}
 </style>
+
+
 <h5>Instruções</h5>
 <table class="tg">
   <tr>
