@@ -22,6 +22,76 @@ Padrões de codificação de instruções:
 | 6 bits 	| 5 bits 	| 5 bits 	| 5 bits 	| 5 bits 	| 6 bits 	|
 
 
+**I:** Para instruções com operandos imediatos:
+|   op   	|   rs   	|   rt   	|   imm   	|
+|:------:	|:------:	|:------:	|:-------:	|
+| 6 bits 	| 5 bits 	| 5 bits 	| 16 bits 	|
+
+
+**J:** Para instruçõesde saltos incondicionais(Jump):
+|   op   	|   addr  	|
+|:------:	|:-------:	|
+| 6 bits 	| 26 bits 	|
+
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+.tg .td{text-align:center;vertical-align:top}
+h5 {text-align:center;}
+</style>
+<h5>Instruções</h5>
+<table class="tg">
+  <tr>
+    <th class="td">Nome</th>
+    <th class="td">Formato</th>
+    <th class="td" colspan="6">Exemplo</th>
+    <th class="td">Comentários</th>
+  </tr>
+  <tr>
+    <td class="td">add<br></td>
+    <td class="td">R</td>
+    <td class="td">0</td>
+    <td class="td">18</td>
+    <td class="td">19</td>
+    <td class="td">17</td>
+    <td class="td">0</td>
+    <td class="td">31<br></td>
+    <td class="td">add $s1, $s2, $s3 ≡ s1 = s2+s3</td>
+  </tr>
+  <tr>
+    <td class="td">sub</td>
+    <td class="td">R</td>
+    <td class="td">0</td>
+    <td class="td">18</td>
+    <td class="td">19</td>
+    <td class="td">17</td>
+    <td class="td">0</td>
+    <td class="td">34</td>
+    <td class="td">sub $s1, $s2, $s3 ≡ s1 = s2-s3</td>
+  </tr>
+  <tr>
+    <td class="td">lw</td>
+    <td class="td">I<br></td>
+    <td class="td">35</td>
+    <td class="td">18</td>
+    <td class="td">17</td>
+    <td class="td" colspan="3">100</td>
+    <td class="td">lw $s1, 0($s2) ≡ s1=S2[0]</td> <!--Warning-->
+  </tr>
+  <tr>
+    <td class="td">sw</td>
+    <td class="td">I</td>
+    <td class="td">43</td>
+    <td class="td">18</td>
+    <td class="td">17</td>
+    <td class="td" colspan="3">100</td>
+    <td class="td">sw $s1, 0($s2) ≡ S2[0]=s1</td><!--Warning-->
+  </tr>
+</table>
+
+
 ## 2. Convenção de registradores do MIPS ##
 |   Nome  	| Número 	|                  Uso                  	| Preservado em chamadas ? 	|
 |:-------:	|:------:	|:-------------------------------------:	|:------------------------:	|
