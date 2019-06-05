@@ -34,7 +34,7 @@ Padrões de codificação de instruções:
 | 6 bits 	| 26 bits 	|
 
 ##### Instruções #####
-<table>
+<div class="tg-wrap"><table id="tg-3QQwY">
   <tr>
     <th rowspan="2">Categoria</th>
     <th rowspan="2">Nome</th>
@@ -151,7 +151,7 @@ Padrões de codificação de instruções:
     <td>0</td>
     <td>24<br></td>
     <td>Hi,Lo = $s2*$s3</td>
-    <td>64-signed product in Hi, Lo regs</td>
+    <td>64-sinalizado produto em Hi, Lo registrador</td>
   </tr>
   <tr>
     <td>multu</td>
@@ -164,7 +164,7 @@ Padrões de codificação de instruções:
     <td>0</td>
     <td>25</td>
     <td>Hi,Lo = $s2*$s3</td>
-    <td>64-signed product in Hi, Lo regs<br></td>
+    <td>64-sinalizado produto em Hi, Lo registrador<br></td>
   </tr>
   <tr>
     <td>div<br></td>
@@ -177,7 +177,7 @@ Padrões de codificação de instruções:
     <td>0</td>
     <td>26</td>
     <td>Lo = $s2/$s3<br>Hi = $s2%$s3<br></td>
-    <td>Lo=quotient<br>Hi=remainder<br></td>
+    <td>Lo = Quociente<br>Hi = Resto<br></td>
   </tr>
   <tr>
     <td>divu</td>
@@ -190,139 +190,131 @@ Padrões de codificação de instruções:
     <td>0</td>
     <td>27</td>
     <td>Lo = $s2/$s3<br>Hi = $s2, $s3<br></td>
-    <td>unsigned quotient and reminder</td>
+    <td>Quociente não negativo e resto</td>
   </tr>
   <tr>
     <td>mfhi</td>
     <td>R</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>mfhi $s1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>16</td>
+    <td>$s1 = Hi<br></td>
+    <td>Copia Hi em $s1</td>
   </tr>
   <tr>
     <td>mflo<br></td>
     <td>R</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>mflo $s1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>16</td>
+    <td>$s1 = Lo</td>
+    <td>Copia Lo em $s1</td>
   </tr>
   <tr>
     <td rowspan="6">Lógico</td>
     <td>and</td>
     <td>R<br></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>and $s1, $s2, $s3</td>
+    <td>0</td>
+    <td>2<br></td>
+    <td>3<br></td>
+    <td>1</td>
+    <td>0</td>
+    <td>36</td>
+    <td>$s1=$s2&amp;$s3</td>
+    <td>E lógico (and)<br></td>
   </tr>
   <tr>
     <td>or</td>
     <td>R<br></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>or $s1, $s2, $s3</td>
+    <td>0</td>
+    <td>2</td>
+    <td>3</td>
+    <td>1</td>
+    <td>0</td>
+    <td>37</td>
+    <td>$s1=$s2|$s3</td>
+    <td>Ou lógico (or)</td>
   </tr>
   <tr>
     <td>andi</td>
     <td>I</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>andi $s1, $s2, 10</td>
+    <td>12</td>
+    <td>2</td>
+    <td>1</td>
+    <td colspan="3">10</td>
+    <td>$s1=$s2&amp;10</td>
+    <td>E lógico (and)</td>
   </tr>
   <tr>
     <td>ori</td>
     <td>I</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>ori $s1, $s2, 10</td>
+    <td>13</td>
+    <td>2</td>
+    <td>1</td>
+    <td colspan="3">10</td>
+    <td>$s1=$s2|10</td>
+    <td>Ou lógico (or)</td>
   </tr>
   <tr>
     <td>sll</td>
     <td>R</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>sll $s1, $s2, 10</td>
+    <td>0</td>
+    <td>0</td>
+    <td>2</td>
+    <td>1</td>
+    <td>10</td>
+    <td>0</td>
+    <td>$s1=$s2&lt;&lt;10</td>
+    <td>Deslocamento binário a esquerda</td>
   </tr>
   <tr>
     <td>srl<br></td>
     <td>R</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>srl</td>
+    <td>0</td>
+    <td>0</td>
+    <td>2</td>
+    <td>1</td>
+    <td>10</td>
+    <td>2</td>
+    <td>$s1=$s2&gt;&gt;10</td>
+    <td>Deslocamento binário a direita</td>
   </tr>
   <tr>
     <td rowspan="3">Transferência de dados</td>
     <td>lw<br></td>
     <td>I</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>lw $s1, 100($s2)</td>
+    <td>35<br></td>
+    <td>2</td>
+    <td>1</td>
+    <td colspan="3">100</td>
+    <td>$s1=Mem[$s2+100]<br></td>
+    <td>Carrega da memória e coloca no registrador<br></td>
   </tr>
   <tr>
     <td>sw</td>
     <td>I</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>sw $s1, 100($s2)</td>
+    <td>43</td>
+    <td>2</td>
+    <td>1</td>
+    <td colspan="3">100</td>
+    <td>Mem[$s2+100]=$s1</td>
+    <td>Carrega do registrador e coloca na memória<br></td>
   </tr>
   <tr>
     <td>lui</td>
@@ -331,9 +323,7 @@ Padrões de codificação de instruções:
     <td></td>
     <td></td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td colspan="3">100</td>
     <td></td>
     <td></td>
   </tr>
@@ -345,9 +335,7 @@ Padrões de codificação de instruções:
     <td></td>
     <td></td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td colspan="3">25</td>
     <td></td>
     <td></td>
   </tr>
@@ -358,9 +346,7 @@ Padrões de codificação de instruções:
     <td></td>
     <td></td>
     <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td colspan="3">25</td>
     <td></td>
     <td></td>
   </tr>

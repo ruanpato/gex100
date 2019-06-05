@@ -5,25 +5,25 @@ txt_entrada:		.asciiz		"\nEntre com o elemento de indice "
 txt_2pontos: 		.asciiz		": "
 txt_maior:			.asciiz		"\nMaior valor: "
 txt_menor:			.asciiz		"\nIndice do menor valor: "
-vetor: 				.space		412   # tamanho máximo 100 inteiros
+vetor: 				.space		412   # tamanho mï¿½ximo 100 inteiros
 
 		.text
 main:
-		add $s2, $zero, $ra		# salva endereço de retorno
+		add $s2, $zero, $ra		# salva endereï¿½o de retorno
 		li	$v0, 4			
 		la	$a0, txt_tamanho
 		syscall					#Imprime string
 		
 		li	$v0, 5			
-		syscall					#Le tamanho do vetor
-		add	$s1, $zero, $v0		#e copia em $s1
-		add	$a1, $zero, $v0		# e também em $a1
+		syscall					# Le tamanho do vetor
+		add	$s1, $zero, $v0		# e copia em $s1
+		add	$a1, $zero, $v0		# e tambï¿½m em $a1
 		
 		la  $t0, vetor
 		
-		add $t1, $zero, $zero	#Inicializa variavel de controle (contador) do laco $t1
-laco:   slt $t2, $t1, $s1		# Se contador < quantidade entra no corpo do laço
-		beq $t2, $zero, fim_leitura # senão pula para fim
+		add $t1, $zero, $zero	# Inicializa variavel de controle (contador) do laco $t1
+laco:   slt $t2, $t1, $s1		# Se contador < quantidade entra no corpo do laï¿½o
+		beq $t2, $zero, fim_leitura # senï¿½o pula para fim
 		
 		li	$v0, 4				
 		la	$a0, txt_entrada
@@ -40,15 +40,15 @@ laco:   slt $t2, $t1, $s1		# Se contador < quantidade entra no corpo do laço
 		li	$v0, 5			
 		syscall					#Le elemento do vetor
 		
-		sw  $v0, 0 ($t0)		#Le armazena na memória em vetor[i]
+		sw  $v0, 0 ($t0)		#Le armazena na memï¿½ria em vetor[i]
 
-		addi $t0, $t0, 4		#aponta para a proxima posição do vetor
-		addi $t1, $t1, 1		#atualiza variável de controle
+		addi $t0, $t0, 4		#aponta para a proxima posiï¿½ï¿½o do vetor
+		addi $t1, $t1, 1		#atualiza variï¿½vel de controle
 		j laco					# volta para testar novamente
 		
 fim_leitura:
-		la  $a0, vetor			#coloca endereço de vetor[0] em $a0; tamanho já está em $a1
-#		jal maior_menor			# tirar o comentário para fazer a chamada da função
+		la  $a0, vetor			#coloca endereï¿½o de vetor[0] em $a0; tamanho jï¿½ estï¿½ em $a1
+#		jal maior_menor			# tirar o comentï¿½rio para fazer a chamada da funï¿½ï¿½o
 		
 		add $s0, $zero, $v0		# copia resultados para $s0 e $s1
 		add $s1, $zero, $v1
@@ -69,4 +69,4 @@ fim_leitura:
 		move	$a0, $s1
 		syscall
 
-		jr  $s2					#retorna para quem chamou a função main
+		jr  $s2					#retorna para quem chamou a funï¿½ï¿½o main

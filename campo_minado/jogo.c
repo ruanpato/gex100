@@ -18,11 +18,11 @@ int main(){
     while(1){
       
         mostra_campo(campoU, n);
-        printf("Digite a linha e a coluna(separados por espaço): ");
+        printf("Digite a linha e coluna para selecionar a posição(separados por um espaço): ");
         scanf("%d %d", &j, &i);                                                                                         // Pega linha coluna
         if(*(campo+((i-1)+(j-1)*n) ) == 9){                                                                             // Se a posição escolhida tem uma bomba
             *(campoU+((i-1)+(j-1)*n) ) = (*(campo+((i-1)+(j-1)*n) )+48);                                                // +48 para converter int para um número em ASCII
-            printf("Você perdeu!!\n");
+            printf("Você selecionou uma bomba e perdeu!\n");
             mostra_campo(campoU, n);
             break;                                                                                                      // Saí do loop "encerrando  o jogo"
         }else{
