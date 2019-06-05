@@ -29,10 +29,10 @@ main:
     jal		selec_opcao     				# jump to selec_opcao and $ra = "this line"
     jal     preenche_matriz_aux             # jump para Preenche Matriz usuário com (?)
     jal     imprime_matriz_aux              # Imprime matriz usuário
-    j exit                                  # Encerrar programa
+    j       exit                            # Encerrar programa
 
 exit:   li      $v0, 10                         # Exit
-        syscall                                 # syscall Exit
+        syscall                                 # syscall ExiBigt
 
 selec_opcao:
     # Maybe a dialog to confirm option                 
@@ -64,7 +64,7 @@ selec_opcao:
         jr		$ra    			            # Volta para main
 
     opcC:
-        li      $s0, 7                      # Carrega em s0 o valor 7 (representando que a matriz é 7 por 7)
+        li      $s0, 9                      # Carrega em s0 o valor 7 (representando que a matriz é 9 por 9)
         jr	    $ra	    		            # Volta para main
 
 preenche_matriz_aux:
@@ -87,8 +87,6 @@ preenche_matriz_aux:
 
 imprime_matriz_aux:
     la      $s7, matriz_aux                 # $s7 é a matriz inicial
-    mult    $s0, $s0                        # n*n (Tamanho da matriz)
-    mflo    $t0                             # $t0 recebe n*n
 
     li      $v0, 4                          # 4 para syscall de imprimir string
     la      $a0, barraN                     # Carrega o endereço de barraN em $a0
@@ -100,10 +98,33 @@ imprime_matriz_aux:
     
     li      $t1, 1                          # Inicia o 'i'($t1) em 1
 
-    imp_1_loop: slt $t7, $t1, $t0           # $t7 = ($t1 < $t0 ? 1 : 0)
+    imp_1_loop: slt     $t7, $t1, $s0       # $t7 = ($t1 < $s0 ? 1 : 0)
         li      $v0, 4                      # 4 para syscall de imprimir string
-        la      $a0, barraN                 # Carrega o endereço de barraN em $a0
+        la      $a0, espaco                 # Carrega o endereço de barraN em $a0
         syscall                             # Imprime \n
         li      $v0, 1                      # 1 para syscall de imprimir inteiro
         add     $a0, $zero, $t1             # $a0 recebe i($t1)
         syscall                             # Imprime o i
+        
+        add     $t1, $t1, 1                 # Incrementa o i
+        beq     $t7, $zero, imp_2_loop      # Vai para o loop 2 se $t7 for igual a zero (ou seja $t1 > $s6)
+        j       imp_1_loop                  # Volta pro loop
+
+    imp_2_loop:
+        li      $v0, 4                          # 4 para syscall de imprimir string
+        la      $a0, espaco                     # Carrega o endereço de espaco em $a0
+        syscall                                 # Imprime espaço
+        syscall                                 # Imprime espaço
+        li      $v0, 4                          # 4 para syscall de imprimir string
+        la      $a0, barra                      # Carrega o endereço de barra em $a0
+        syscall                                 # Imprime barra '|'
+        addi    $t1, $zero, 2                   # Adiciona 2
+        mult    $s0, $t1                        # Multiplica n por 2
+        mflo    $t1                             # $t1 = n*2
+        subi    $t1, $t1, 2                     # $t1 = n*2-2
+
+        loop_hifen: slt     $t7, $t0, $t1       #
+            
+
+        li  $v0, 10
+        syscall
