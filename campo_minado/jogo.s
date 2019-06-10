@@ -1,41 +1,103 @@
 ## Jogo campo minado assembly
 ## syscall http://courses.missouristate.edu/kenvollmar/mars/help/syscallhelp.html
-## $s0 opcao
+## $s0 opcao (a == 5 || b == 7 || c == 9), $s7 == Matriz usuário, $s6 == Matriz sistema, $s5 contador auxiliar
 .data
 # Textos
-wrd_selecOpc:   .asciiz "\nDigite qual o tamanho que deseja que a matriz tenha\na) 5x5\nb) 7x7\nc) 9x9\n-> "
-wrd_selecPos:	.asciiz "\nDigite a linha e coluna para selecionar a posição(separados por um espaço): "
-wrd_perdeu:     .asciiz "\nVocê selecionou uma bomba e perdeu!\n"
-barraN:         .asciiz "\n"
-barra:          .asciiz "|"
-hifen:          .asciiz "-"
-espaco:         .asciiz " "
+wrd_linha5:         .asciiz "   |----------|\n"
+wrd_teste:          .asciiz "\n     |----------|\n>1 |?|?|?|?|?|\n     |----------|\n  2 |?|?|?|?|?|\n     |----------|\n  3 |?|?|?|?|?|\n     |----------|\n  4 |?|?|?|?|?|\n     |----------|\n  5 |?|?|?|?|?|\n     |----------|\n"
+wrd_selecOpc:       .asciiz "\nDigite qual o tamanho que deseja que a matriz tenha\na) 5x5\nb) 7x7\nc) 9x9\n-> "
+wrd_selecPos:	    .asciiz "\nDigite a linha e coluna para selecionar a posição(separados por um espaço): "
+wrd_perdeu:         .asciiz "\nVocê selecionou uma bomba e perdeu!\n"
+wrd_confirma_opcao: .asciiz "\n(caso cancele o programa encerra) Você confirma que deseja jogar em um campo de:"
+wrd_confirma_aux:   .asciiz "Linha selecionada\n"
+barraN:             .asciiz "\n"
+barra:              .asciiz "|"
+hifen:              .asciiz "-"
+espaco:             .asciiz " "
 # Matrizes
-matriz_aux:     .word   82                                                                                 # Matriz de caracteres
-matriz_jogo:    .word   328                                                                                # Matriz de inteiros
+matriz_usuario:     .word   82                                                                             # Matriz de caracteres
+matriz_jogo:        .word   328                                                                            # Matriz de inteiros
+# Vetor
+entrada:            .space   9
 
 .text
 main:
+    ## Just a tst ##
+    #li      $v0, 51
+    #la      $a0, wrd_teste
+    #li      $a1, 4
+    #syscall
+    #addi    $t0, $a0, 0
+    #li      $v0, 56
+    #la      $a0, wrd_confirma_aux
+    #add     $a1, $zero, $t0
+    #syscall
+    ## Just a tst ##
 
+    # SELECIONA OPÇÃO
+    # Imprime a string que pergunta qual a opção a ser selecionada
     li      $v0, 4                          # 4 syscall para imprimir string (li = load immediate)
     la      $a0, wrd_selecOpc               # $a0 = &wrd_selecOpc (la = load address)
     syscall                                 # Imprime $a0 (String)
 
+    # Lê a opção selecionada pelo usuário
     li      $v0, 12                         # 12 syscall para ler caractere (li = load immediate)
     syscall                                 # Lê a opção
 
     add     $s0, $v0, $zero                 # Salva a opção escolhida em $s0, (leitura de caractere joga ele no $v0)
+    # SELECIONA OPÇÃO
     
-    jal		selec_opcao     				# jump to selec_opcao and $ra = "this line"
-    jal     preenche_matriz_aux             # jump para Preenche Matriz usuário com (?)
-    jal     imprime_matriz_aux              # Imprime matriz usuário
+    
+    add     $s5, $zero, $zero               # Inicia o contador auxiliar com zero(será usado para confirmar seleção
+    jal		selec_tamanho_matriz     	    # jump to selec_tamanho_matriz and $ra = "this line"
+    jal     preenche_matriz_usuario         # jump para Preenche Matriz usuário com (?)
+    jal     imprime_matriz_usuario          # Imprime matriz usuário
     j       exit                            # Encerrar programa
 
-exit:   li      $v0, 10                         # Exit
-        syscall                                 # syscall ExiBigt
+exit:   li      $v0, 10                     # Exit
+        syscall                             # syscall ExiBigt
 
-selec_opcao:
-    # Maybe a dialog to confirm option                 
+selec_tamanho_matriz:
+    addi    $sp, $sp, -4                    # Incrementa em uma posição o stack pointer
+    sw      $ra, 0($sp)                     # Salva o $ra da chamada de selec_tamanho_matriz na main em $sp[0]
+    jal     confirma_opcao                  # $ra = this_line
+
+
+    confirma_opcao:
+        # CAIXA DE DIALOGO
+        #li      $v0, 4                          # 4 syscall para imprimir string (li = load immediate)
+        #la      $a0, wrd_teste                  # $a0 = &wrd_selecOpc (la = load address)
+        #syscall                                 # Imprime $a0 (String)
+
+        la      $t0, wrd_confirma_aux
+        la      $t1, wrd_confirma_opcao
+
+        la      $a0, wrd_confirma_opcao     # Carrega a string de confirmar opção para o confirm dialog
+        li      $v0, 50                     # 50 é o identificador de chamada do confirm box MARS
+        syscall
+        # CAIXA DE DIALOGO
+        #  t1 = 1, t2 = 2
+        li      $t1, 1                      # Carrega zero para comparar com $a0, que é a saida do confirm dialog
+        li      $t2, 0                      # Carrega zero para comparar com $a0, que é a saida do confirm dialog
+        beq     $a0, $zero, confirm_sim     # Se $a0 = 0 (opção selec foi sim) vai para confirmada_sim
+        beq     $a0, $t1, confirm_nao       # Se $a0 = 1 (opção selec foi nao) vai para confirm_nao
+        beq     $a0, $t2, confirm_cancel    # Se $a0 = 2 (opção selec foi cancelar) vai para confirm_cancel que encerra a execução do programa
+
+        confirm_sim:
+            lw      $ra, 0($sp)                     # Coloca o $ra para dps da chamada de confirma opcao em selec_tamanho_matriz
+            jr      $ra                             # Volta para a função selec_tamanho_matriz mais exatamente após a função confirma_opcao 
+        confirm_nao:
+            # Recebe o novo valor
+            li      $v0, 4                          # 4 syscall para imprimir string (li = load immediate)
+            la      $a0, wrd_selecOpc               # $a0 = &wrd_selecOpc (la = load address)
+            syscall                                 # Imprime $a0 (String)
+
+            li      $v0, 12                         # 12 syscall para ler caractere (li = load immediate)
+            syscall                                 # Lê a opção
+            # Recebe o novo valor ##
+            jr      $ra                             # Volta para confirmar a opção nova.
+        confirm_cancel:
+            j       exit                            # Encerra a execução do programa.
 
     li      $t0, 'a'                        # Carrega em $t0 'a' para comparar (load immediate)
     beq		$s0, $t0, opcA              	# se $s0 == 'a'($t0) então
@@ -67,13 +129,13 @@ selec_opcao:
         li      $s0, 9                      # Carrega em s0 o valor 7 (representando que a matriz é 9 por 9)
         jr	    $ra	    		            # Volta para main
 
-preenche_matriz_aux:
+preenche_matriz_usuario:
     mult    $s0, $s0                        # n*n (Tamanho da matriz)
     mflo    $t0                             # Atribui a $t0 o valor da multiplicação
-    la      $t7, matriz_aux                 # Carrega o vetor matriz auxiliar em $t7
+    la      $t7, matriz_usuario             # Carrega o vetor matriz auxiliar em $t7
     li      $t1, 0                          # Inicia em zero o indice($t1)
 
-    enquanto_preenche_aux:   slt $t2, $t1, $t0       # Se $t1 < $t0($t0, tamanho da matriz) então $t2 = 1
+    enquant_preenche_usuario:   slt $t2, $t1, $t0    # Se $t1 < $t0($t0, tamanho da matriz) então $t2 = 1
         beq     $t2, $zero, fim                      # Se for igual a zero volta pra main, caso contrário continua a preencher
         fim:
             jr      $ra                              # Retorno para main
@@ -83,34 +145,15 @@ preenche_matriz_aux:
 
         addi    $t7, $t7, 1                          # Incrementa a posição do vetor
         addi    $t1, $t1, 1                          # Incrementa a variável de controle para saída do loop
-        j   enquanto_preenche_aux                    # Retorna para o inicio loop
+        j   enquant_preenche_usuario                 # Retorna para o inicio loop
 
-imprime_matriz_aux:
-    la      $s7, matriz_aux                 # $s7 é a matriz inicial
-
-    li      $v0, 4                          # 4 para syscall de imprimir string
-    la      $a0, barraN                     # Carrega o endereço de barraN em $a0
-    syscall                                 # Imprime \n
-    li      $v0, 4                          # 4 para syscall de imprimir string
-    la      $a0, espaco                     # Carrega o endereço de espaco em $a0
-    syscall                                 # Imprime espaço
-    syscall                                 # Imprime espaço
+imprime_matriz_usuario:
+    la      $s7, matriz_usuario                 # $s7 é a matriz do usuário
     
-    li      $t1, 1                          # Inicia o 'i'($t1) em 1
-
-    imp_1_loop: slt     $t7, $t1, $s0       # $t7 = ($t1 < $s0 ? 1 : 0)
-        li      $v0, 4                      # 4 para syscall de imprimir string
-        la      $a0, espaco                 # Carrega o endereço de barraN em $a0
-        syscall                             # Imprime \n
-        li      $v0, 1                      # 1 para syscall de imprimir inteiro
-        add     $a0, $zero, $t1             # $a0 recebe i($t1)
-        syscall                             # Imprime o i
-        
-        add     $t1, $t1, 1                 # Incrementa o i
-        beq     $t7, $zero, imp_2_loop      # Vai para o loop 2 se $t7 for igual a zero (ou seja $t1 > $s6)
-        j       imp_1_loop                  # Volta pro loop
-
-    imp_2_loop:
+    li      $t0, 0                              # Inicia o 'i'($t1) em 0
+    li      $t1, 2                              # Carrega 2 em li
+    ## Loop para fazer a impressão da matriz
+    loop_imprime:   slt $t
         li      $v0, 4                          # 4 para syscall de imprimir string
         la      $a0, espaco                     # Carrega o endereço de espaco em $a0
         syscall                                 # Imprime espaço
@@ -118,13 +161,16 @@ imprime_matriz_aux:
         li      $v0, 4                          # 4 para syscall de imprimir string
         la      $a0, barra                      # Carrega o endereço de barra em $a0
         syscall                                 # Imprime barra '|'
-        addi    $t1, $zero, 2                   # Adiciona 2
-        mult    $s0, $t1                        # Multiplica n por 2
-        mflo    $t1                             # $t1 = n*2
-        subi    $t1, $t1, 2                     # $t1 = n*2-2
+        
+        j		exit	            			# jump to exit
 
-        loop_hifen: slt     $t7, $t0, $t1       #
-            
-
-        li  $v0, 10
-        syscall
+    nova_linha:                                     # Deve sempre ser chamado com JAL
+        # Imprime um \n e dá dois espaços para uma nova linha
+        li      $v0, 4                              # 4 para syscall de imprimir string
+        la      $a0, barraN                         # Carrega o endereço de barraN em $a0
+        syscall                                     # Imprime \n
+        li      $v0, 4                              # 4 para syscall de imprimir string
+        la      $a0, espaco                         # Carrega o endereço de espaco em $a0
+        syscall                                     # Imprime espaço
+        syscall                                     # Imprime espaço
+        jr      $ra                                 # Retorna para $ra(a linha que o chamou)
