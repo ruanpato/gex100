@@ -6,8 +6,7 @@
 wrd_linha_5:        .asciiz "\n   |---------|"
 wrd_linha_7:        .asciiz "\n   |-------------|"
 wrd_linha_9:        .asciiz "\n   |-----------------|"
-wrd_tst:            .asciiz "\n---TESTE---\n"
-wrd_teste_print:          .asciiz "\n     |----------|\n>1 |?|?|?|?|?|\n     |----------|\n  2 |?|?|?|?|?|\n     |----------|\n  3 |?|?|?|?|?|\n     |----------|\n  4 |?|?|?|?|?|\n     |----------|\n  5 |?|?|?|?|?|\n     |----------|\n"
+wrd_teste:          .asciiz "\n     |----------|\n>1 |?|?|?|?|?|\n     |----------|\n  2 |?|?|?|?|?|\n     |----------|\n  3 |?|?|?|?|?|\n     |----------|\n  4 |?|?|?|?|?|\n     |----------|\n  5 |?|?|?|?|?|\n     |----------|\n"
 wrd_selecOpc:       .asciiz "\nDigite qual o tamanho que deseja que a matriz tenha\na) 5x5\nb) 7x7\nc) 9x9\n-> "
 wrd_selecPos:	    .asciiz "\nDigite a linha e coluna para selecionar a posição(separados por um espaço): "
 wrd_perdeu:         .asciiz "\nVocê selecionou uma bomba e perdeu!\n"
@@ -42,16 +41,17 @@ main:
     add     $s5, $zero, $zero               # Inicia o contador auxiliar com zero(será usado para confirmar seleção
     jal		selec_tamanho_matriz     	    # jump to selec_tamanho_matriz and $ra = "this line"
     jal     preenche_matriz_usuario         # jump para Preenche Matriz usuário com (?)
-    #jal     imprime_matriz_usuario          # Imprime matriz usuário
+    jal     imprime_matriz_usuario          # Imprime matriz usuário
     j       exit                            # Encerrar programa
 
 exit:   li      $v0, 10                     # Exit
         syscall                             # syscall ExiBigt
 
 selec_tamanho_matriz:
-    addi    $sp, $sp, 4                     # Incrementa em uma posição o stack pointer
+    addi    $sp, $sp, -4                    # Incrementa em uma posição o stack pointer
     sw      $ra, 0($sp)                     # Salva o $ra da chamada de selec_tamanho_matriz na main em $sp[0]
     jal     confirma_opcao                  # $ra = this_line
+
 
     confirma_opcao:
         # CAIXA DE DIALOGO
@@ -71,7 +71,7 @@ selec_tamanho_matriz:
         beq     $a0, $t2, confirm_cancel    # Se $a0 = 2 (opção selec foi cancelar) vai para confirm_cancel que encerra a execução do programa
 
         confirm_sim:
-            #lw      $ra, 0($sp)                     # Coloca o $ra para dps da chamada de confirma opcao em selec_tamanho_matriz
+            lw      $ra, 0($sp)                     # Coloca o $ra para dps da chamada de confirma opcao em selec_tamanho_matriz
             jr      $ra                             # Volta para a função selec_tamanho_matriz mais exatamente após a função confirma_opcao 
         confirm_nao:
             # Recebe o novo valor
@@ -105,9 +105,6 @@ selec_tamanho_matriz:
     beq     $s0, $t0, opcC                  # Se $s0 == 'C'($t0) então
 
     opcA:
-        la      $a0, barra_n
-        li      $v0, 4
-        syscall
         li      $s0, 5                      # Carrega em s0 o valor 5 (representando que a matriz é 5 por 5)
         jr		$ra    			            # Volta para main
         
@@ -120,17 +117,8 @@ selec_tamanho_matriz:
         jr	    $ra	    		            # Volta para main
 
 preenche_matriz_usuario:
-    la      $a0, barra_n
-    li      $v0, 4
-    syscall
-    addi      $a0, $s0, 0
-    li      $v0, 1
-    syscall
-
     mult    $s0, $s0                        # n*n (Tamanho da matriz)
     mflo    $t0                             # Atribui a $t0 o valor da multiplicação
-    
-
     la      $s1, matriz_usuario             # Carrega o vetor matriz auxiliar em $s1
     li      $t1, 0                          # Inicia em zero o indice($t1)
 
