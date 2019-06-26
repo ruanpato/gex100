@@ -12,6 +12,7 @@ Especificações:
 * **Número de linhas na cache: 8;**  
 * **Tamanho da célula: 8 bits;**  
 * **Tamanho do conjunto 2 ou 4 linhas (definida pelo número entre parênteses ao lado da política de cada grupo).**  
+
 Cada dupla deve implementar a política de mapeamento, substituição e escrita conforme especificado na folha a seguir.  
 Na tela do programa deve ser apresentado todo o conteúdo da memória principal, da memória cache, da próxima localização que será substituída (de acordo com a política definida), além de um menu que de acesso às seguintes operações:  
 * Ler o conteúdo de um endereço da memória;  
