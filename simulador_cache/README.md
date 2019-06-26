@@ -4,6 +4,7 @@ Diretório criado para armazenar informações sobre Assembly MIPS.
 
 ## Sumário ##
 **[01.](#01-Instru%C3%A7%C3%B5es-para-implementa%C3%A7%C3%A3o) Instruções para implementação.**  
+**[02.](#02-Pol%C3%ADticas) Políticas**
 
 ## 01. Instruções para implementação ##
 Especificações:  
@@ -24,8 +25,10 @@ OBS1: Os valores e endereços devem ser apresentados em hexadecimal ou binário.
 OBS2: Ao ler um endereço deve informar se encontrou na cache ou não. Qual o número do bloco a que se refere o endereço, qual o quadro na cache que está mapeado e o deslocamento do mesmo.  
 OBS3: Os contadores da política de substituição possuem 3 bits.
 
-## 02. Convenção de registradores do MIPS ##
-
+### 02. Políticas ###
+* Mapeamento Associativo por conjuntos(4).
+* Escrita no retorno.
+* LRU.
 
 ### Ferramentas utilizadas e Bibliografia ###
 
