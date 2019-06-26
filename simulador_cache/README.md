@@ -6,7 +6,7 @@ Diretório criado para armazenar informações sobre Assembly MIPS.
 **[01.](#01-Instru%C3%A7%C3%B5es-para-implementa%C3%A7%C3%A3o) Instruções para implementação.**  
 
 ## 01. Instruções para implementação ##
-Especificações:
+Especificações:  
     * **Número de células na MP: 128;**
     * **Tamanho do bloco: 4 células;**
     * **Número de linhas na cache: 8;**
