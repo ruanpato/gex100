@@ -1,3 +1,6 @@
+import MemoryCache
+import MainMemory
+import Cell
 from bitarray import bitarray
 
 def readContentFromMemory():
@@ -20,9 +23,9 @@ messageInput += "5 - Mostrar toda memória cache\n"
 messageInput += "6 - Encerrar o programa\n"
 
 
-mainMemory = MainMemory()
-cell = Cell()
-cache = MemoryCache()
+mainMemory = MainMemory.MainMemory()
+cell = Cell.Cell()
+cache = MemoryCache.MemoryCache()
 
 cache.printAllCache()
 
