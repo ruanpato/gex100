@@ -1,6 +1,6 @@
 import MemoryCache
 import MainMemory
-import Cell
+
 from bitarray import bitarray
 
 def readContentFromMemory():
@@ -24,7 +24,7 @@ messageInput += "6 - Encerrar o programa\n"
 
 
 mainMemory = MainMemory.MainMemory()
-cell = Cell.Cell()
+
 cache = MemoryCache.MemoryCache()
 
 cache.printAllCache()
