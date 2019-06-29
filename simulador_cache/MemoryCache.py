@@ -1,4 +1,4 @@
-import Line
+from Line import *
 
 '''
 Será utilizado a seguinte lógica para determinar em qual quadro está a linha:
@@ -13,9 +13,7 @@ class MemoryCache:
         #cada linha tem o tamanho de um bloco
         # logo cada linha sera composta de 4 celulas
         for i in range(8):                
-            a = Line(i)
-            #self.line.append(Line(i))
-            pass
+            self.line.append(Line(i))
     
     def printAllCache(self):
         for l in self.line:

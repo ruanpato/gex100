@@ -1,6 +1,6 @@
-import Cell
+from Cell import *
 
 class Line:
-    def __init__(self):
+    def __init__(self, label):
         self.line = [Cell(), Cell(), Cell(), Cell()]
-        self.label = 1
+        self.label = label
