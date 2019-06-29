@@ -35,5 +35,6 @@ OBS3: Os contadores da política de substituição possuem 3 bits.
 
 #### Autores ####
 
+* **Guilherme Sabino** - *Exercícios e trabalhos feitos* - [Ruan Pato](https://github.com/fersasil)
 * **Ruan Pato** - *Exercícios e trabalhos feitos* - [Ruan Pato](https://github.com/ruanpato)
 * **Me. Luciano Lores Caimi** - *Professor*
