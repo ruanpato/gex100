@@ -35,6 +35,7 @@ OBS3: Os contadores da política de substituição possuem 3 bits.
 
 ### Ferramentas utilizadas e Bibliografia ###
 
+* [Python](https://python.org/) - Python Interpreter (Not used in when i studied in first semester of 2016)
 
 #### Autores ####
 
