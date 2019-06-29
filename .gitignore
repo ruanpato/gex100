@@ -3,4 +3,4 @@
 
 # To let gitignore global
 # git config --global core.excludesfile ~/.gitignore
-~/__pycache__/
+**/__pycache__/
