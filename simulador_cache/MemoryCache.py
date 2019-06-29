@@ -68,7 +68,21 @@ class MemoryCache:
     def isHere(self, bitArray):
         number = bitArray.to01()
         
-        # verificar o tamanho, 
+        # verificar o tamanho do número, ele obrigatoriamente tem 8 digitos
+        
+        tam = len(bitArray)
+        
+        zeros = ""
+        
+        if tam < 8:
+            dif = 8 - tam
+            
+            for j in range(dif):
+                zeros += "0"
+        
+        number = zeros + number
+        
+        print(number)
         
         label = int(number[ : 5], 2)
         conjunto = int(number[-4 : -2], 2)
