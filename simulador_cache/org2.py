@@ -1,10 +1,18 @@
-import MemoryCache
-import MainMemory
+from MemoryCache import *
+from MainMemory import *
 
 from bitarray import bitarray
 
 def readContentFromMemory():
+    memoryAdress = input("Digite o endereço de memória em hexa. Ex: 0x12: ")
+    adressInteger = int(memoryAdress, 16)
+    adressBits = bin(adressInteger)[2:]
+    arrayBits = bitarray(adressBits)
     
+    # Verificar se esta na cache
+    a = memoryCache.isHere(arrayBits)
+    print(a)
+    # Se não, buscar na memória
     pass
 
 def writeContentInMemory():
@@ -23,25 +31,11 @@ messageInput += "5 - Mostrar toda memória cache\n"
 messageInput += "6 - Encerrar o programa\n"
 
 
-mainMemory = MainMemory.MainMemory()
+mainMemory = MainMemory()
 
-cache = MemoryCache.MemoryCache()
-
-cache.printAllCache()
-
-#print(mainMemory.cells[0].bits)
-# mainMemory.printAllCells()
-#mainMemory.printBlock(2)
+memoryCache = MemoryCache()
 
 #info = ['00000000', '00000001', '00000010', '00000011']
-
-#mainMemory.writeBlock(2, info)
-
-#print('')
-
-#mainMemory.printBlock(2)
-
-exit(0)
 
 while True:
     option = input(messageInput)

@@ -30,3 +30,13 @@ class MemoryCache:
                 cell.printCell()
                 
             print()
+    
+    '''
+    Recebe um array de bits e verifica se o endereço contido nele esta na memoria cache
+    Se sim retorna o indice dela
+    Se não retorna -1
+    '''
+    
+    def isHere(self, bitArray):
+        
+        return 5
