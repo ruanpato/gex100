@@ -3,6 +3,4 @@
 
 # To let gitignore global
 # git config --global core.excludesfile ~/.gitignore
-simulador_cache/__pycache__/MainMemory.cpython-37.pyc
-simulador_cache/__pycache__/MemoryCache.cpython-37.pyc
-simulador_cache/__pycache__/Cell.cpython-37.pyc
+**/__pycache__/

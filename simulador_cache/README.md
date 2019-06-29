@@ -4,8 +4,8 @@ Diretório criado para armazenar informações sobre Assembly MIPS.
 
 ## Sumário ##
 **[01.](#01-Instru%C3%A7%C3%B5es-para-implementa%C3%A7%C3%A3o) Instruções para implementação.**  
-**[02.](#02-Pol%C3%ADticas) Políticas**
-**[03.](#03-Padr%C3%B5es-de-codifica%C3%A7%C3%A3o)**
+**[02.](#02-Pol%C3%ADticas) Políticas**  
+**[03.](#03-Padr%C3%B5es-de-codifica%C3%A7%C3%A3o) Padrões de codificação**
 
 ## 01. Instruções para implementação ##
 Especificações:  
@@ -36,7 +36,9 @@ OBS3: Os contadores da política de substituição possuem 3 bits.
 
 ### Ferramentas utilizadas e Bibliografia ###
 
-* [Python](https://python.org/) - Python Interpreter (Not used in when i studied in first semester of 2016)
+* [Python](https://python.org/) - Python Interpreter.
+* **Python Libraries:**
+  * [bitarrray](https://pypi.org/project/bitarray/) - A library with efficiently ways to represents an array of booleans.
 
 #### Autores ####
 
