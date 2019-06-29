@@ -1,3 +1,5 @@
+import Cell
+
 class MemoryCache:
     def __init__(self):
         self.line = []
