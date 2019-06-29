@@ -14,15 +14,15 @@ class MainMemory:
             cell.printCell()
 
     def readBlock(self, numBlock):
-        endBlock = numBlock * 4
-        #startBlock = endBlock - 4
+        startBlock = numBlock * 4
+        #startBlock = startBlock - 4
 
         block = []
         
-        block.append(self.cells[endBlock - 4]) # Primeiro Célula
-        block.append(self.cells[endBlock - 3]) # Segunda Célula
-        block.append(self.cells[endBlock - 2]) # Terceira Célula
-        block.append(self.cells[endBlock - 1]) # Quarta Célula
+        block.append(self.cells[startBlock + 0]) # Primeiro Célula
+        block.append(self.cells[startBlock + 1]) # Segunda Célula
+        block.append(self.cells[startBlock + 2]) # Terceira Célula
+        block.append(self.cells[startBlock + 3]) # Quarta Célula
         
         return block
     

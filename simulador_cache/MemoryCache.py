@@ -18,15 +18,3 @@ class MemoryCache:
             print()
             
     pass
-
-def readContentFromMemory():
-    
-    pass
-
-def writeContentInMemory():
-    
-    pass
-
-def statistics():
-    
-    pass
