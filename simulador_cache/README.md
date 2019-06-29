@@ -36,9 +36,9 @@ OBS3: Os contadores da política de substituição possuem 3 bits.
 
 ### Ferramentas utilizadas e Bibliografia ###
 
-* [Python](https://python.org/) - Python Interpreter.
-* **Python Libraries:**
-  * [bitarrray](https://pypi.org/project/bitarray/) - A library with efficiently ways to represents an array of booleans.
+* [Python](https://python.org/) - Interpretador Python.
+* **Bibliotecas Python:**
+  * [bitarrray](https://pypi.org/project/bitarray/) - Uma biblioteca com forma eficiente de representar um array de booleanos.
 
 #### Autores ####
 
