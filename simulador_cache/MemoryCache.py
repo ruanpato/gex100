@@ -11,6 +11,11 @@ Os conjuntos podem ser definidos "linhas concatenadas" seguindo o seguinte padr�
     linha 1    -    linha 5 = Conjunto 1
     linha 2    -    linha 6 = Conjunto 2
     linha 3    -    linha 7 = Conjunto 3
+    Padrão da entrada:
+    E = bits do endereço
+    C = Conjunto pertencente
+    D = Deslocamento dentro do quadro
+    EEEEEECCDD
 '''
 
 class MemoryCache:
