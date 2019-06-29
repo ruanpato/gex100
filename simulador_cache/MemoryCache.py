@@ -1,5 +1,12 @@
 import Cell
 
+'''
+Será utilizado a seguinte lógica para determinar em qual quadro está a linha:
+[0,3] = Quadro A
+[4,7] = Quadro B
+Cada linha será um objeto do tipo Line que possui um rótulo e quatro células
+'''
+
 class MemoryCache:
     def __init__(self):
         self.line = []
