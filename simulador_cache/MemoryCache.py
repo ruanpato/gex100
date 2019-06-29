@@ -48,6 +48,31 @@ class MemoryCache:
     Se não retorna -1
     '''
     
+    def verifyConjunto(self, label, conjunto):
+        print("Label é {}".format(label))
+        print("Conjunto é {}".format(conjunto))
+        
+        findB = lambda x: x + 4
+        
+        quadroA = self.line[conjunto]
+        quadroB = self.line[findB(conjunto)]
+        
+        print(quadroA)
+        print(quadroB)
+        
+        # Conjunto é o 3, ele tem duas possiblidade, verificar o conjunto
+        # ja que o conjunto é de 0 a 7, então o 3
+        
+        pass
+    
     def isHere(self, bitArray):
-        print(bitArray)
+        number = bitArray.to01()
+        
+        # verificar o tamanho, 
+        
+        label = int(number[ : 5], 2)
+        conjunto = int(number[-4 : -2], 2)
+        
+        self.verifyConjunto(label, conjunto)
+
         return 5
