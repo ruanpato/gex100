@@ -5,6 +5,7 @@ Diretório criado para armazenar informações sobre Assembly MIPS.
 ## Sumário ##
 **[01.](#01-Instru%C3%A7%C3%B5es-para-implementa%C3%A7%C3%A3o) Instruções para implementação.**  
 **[02.](#02-Pol%C3%ADticas) Políticas**
+**[03.](#03-Padr%C3%B5es-de-codifica%C3%A7%C3%A3o)**
 
 ## 01. Instruções para implementação ##
 Especificações:  
@@ -30,7 +31,7 @@ OBS3: Os contadores da política de substituição possuem 3 bits.
 * Escrita no retorno.
 * LRU.
 
-### Padrões de codificação ###
+### 03. Padrões de codificação ###
 [PEP8](https://www.python.org/dev/peps/pep-0008/)
 
 ### Ferramentas utilizadas e Bibliografia ###
