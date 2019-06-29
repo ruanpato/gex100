@@ -30,6 +30,9 @@ OBS3: Os contadores da política de substituição possuem 3 bits.
 * Escrita no retorno.
 * LRU.
 
+### Padrões de codificação ###
+[PEP8](https://www.python.org/dev/peps/pep-0008/)
+
 ### Ferramentas utilizadas e Bibliografia ###
 
 
