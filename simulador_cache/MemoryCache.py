@@ -4,7 +4,13 @@ from Line import *
 Será utilizado a seguinte lógica para determinar em qual quadro está a linha:
 [0,3] = Quadro A
 [4,7] = Quadro B
-Cada linha será um objeto do tipo Line que possui um rótulo e quatro células
+Cada linha será um objeto do tipo Line que possui um rótulo e quatro células.
+Os conjuntos podem ser definidos "linhas concatenadas" seguindo o seguinte padrão:
+    Quadro A   -    Quadro B
+    linha 0    -    linha 4 = Conjunto 0
+    linha 1    -    linha 5 = Conjunto 1
+    linha 2    -    linha 6 = Conjunto 2
+    linha 3    -    linha 7 = Conjunto 3
 '''
 
 class MemoryCache:
