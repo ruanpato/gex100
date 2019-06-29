@@ -7,7 +7,7 @@ class MemoryCache:
         # logo cada linha sera composta de 4 celulas
 
         for i in range(8):                
-            l = [Cell(), Cell(), Cell(), Cell()]
+            l = [Cell.Cell(), Cell.Cell(), Cell.Cell(), Cell.Cell()]
             self.line.append(l)
     
     def printAllCache(self):
