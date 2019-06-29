@@ -15,7 +15,7 @@ Os conjuntos podem ser definidos "linhas concatenadas" seguindo o seguinte padr√
     E = bits do endere√ßo
     C = Conjunto pertencente
     D = Deslocamento dentro do quadro
-    EEEEEECCDD
+    EEE EEE CC DD
 '''
 
 class MemoryCache:
@@ -49,5 +49,5 @@ class MemoryCache:
     '''
     
     def isHere(self, bitArray):
-        
+        print(bitArray)
         return 5
