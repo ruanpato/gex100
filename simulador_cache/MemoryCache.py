@@ -112,7 +112,7 @@ class MemoryCache:
         # LRU VEM AQUI PRA SABER em qual quadro sera escrito a informação MUDANÇAS NA MEMÓRIA #
         
         # LRU RETORNA QUADRO PARA ESSA FUNÇÃO!
-        return self.LRU(self, conjunto, bloco)
+        return self.LRU(self, conjunto)
 
-    def LRU(self, conjunto, label, block):
+    def LRU(self, conjunto):
         return 0 if self.line[conjunto].recentlyUsed < self.line[conjunto+4].recentlyUsed else 1
