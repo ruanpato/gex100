@@ -10,9 +10,11 @@ def readContentFromMemory():
     arrayBits = bitarray(adressBits)
     
     # Verificar se esta na cache
-    a = memoryCache.isHere(arrayBits)
+    a = memoryCache.isHere(arrayBits, mainMemory)
+    
+    print("Conteudo lido para a memória com sucesso!")
+    
     print(a)
-    # Se não, buscar na memória
     pass
 
 def writeContentInMemory():

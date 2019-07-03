@@ -42,6 +42,13 @@ class MemoryCache:
                 
             print()
     
+    
+    
+    def LRU(self, label, bloco):
+        #ESCREVE SUA Função aqui
+        
+        pass
+    
     '''
     Recebe um array de bits e verifica se o endereço contido nele esta na memoria cache
     Se sim retorna o indice dela
@@ -57,15 +64,19 @@ class MemoryCache:
         quadroA = self.line[conjunto]
         quadroB = self.line[findB(conjunto)]
         
-        print(quadroA)
-        print(quadroB)
+        if quadroA.label == label
+            return quadroA
+        elif quadroB == label
+            return quadroB
+        else:
+            return false
         
         # Conjunto é o 3, ele tem duas possiblidade, verificar o conjunto
         # ja que o conjunto é de 0 a 7, então o 3
         
         pass
     
-    def isHere(self, bitArray):
+    def isHere(self, bitArray, mainMemory):
         number = bitArray.to01()
         
         # verificar o tamanho do número, ele obrigatoriamente tem 8 digitos
@@ -87,6 +98,18 @@ class MemoryCache:
         label = int(number[ : 5], 2)
         conjunto = int(number[-4 : -2], 2)
         
-        self.verifyConjunto(label, conjunto)
+        info = self.verifyConjunto(label, conjunto)
 
-        return 5
+        if info != false:
+            # retorna o quadro em que a informação se encontra
+            return info
+
+        # Se o quadro não estiver na cache é preciso buscar da cache o bloco! 
+        
+        bloco = mainMemory.readBlock(numBlock)
+        
+        # LRU VEM AQUI PRA SABER em qual quadro sera escrito a informação MUDANÇAS NA MEMÓRIA #
+        
+        # LRU RETORNA QUADRO PARA ESSA FUNÇÃO!
+        return self.LRU(label, bloco)
+        
