@@ -43,13 +43,6 @@ class MemoryCache:
                 
             print()
     
-    
-    
-    def LRU(self, label, bloco):
-        #ESCREVE SUA Função aqui
-        
-        pass
-    
     '''
     Recebe um array de bits e verifica se o endereço contido nele esta na memoria cache
     Se sim retorna o indice dela
