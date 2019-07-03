@@ -25,7 +25,6 @@ class MemoryCache:
         # logo cada linha sera composta de 4 celulas
         for i in range(8):                
             self.line.append(Line(i))
-        self.lru = LRU(-1, -1)          # LRU vazio
     
     def printAllCache(self):
         for i, l in enumerate(self.line):
