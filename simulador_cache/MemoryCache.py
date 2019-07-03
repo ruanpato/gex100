@@ -112,4 +112,3 @@ class MemoryCache:
         
         # LRU RETORNA QUADRO PARA ESSA FUNÇÃO!
         return self.LRU(label, bloco)
-        
