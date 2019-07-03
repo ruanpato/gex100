@@ -25,6 +25,7 @@ class MemoryCache:
         # logo cada linha sera composta de 4 celulas
         for i in range(8):                
             self.line.append(Line(i))
+        self.lru = LRU(-1, -1)          # LRU vazio
     
     def printAllCache(self):
         for i, l in enumerate(self.line):
@@ -111,4 +112,4 @@ class MemoryCache:
         # LRU VEM AQUI PRA SABER em qual quadro sera escrito a informação MUDANÇAS NA MEMÓRIA #
         
         # LRU RETORNA QUADRO PARA ESSA FUNÇÃO!
-        return self.LRU(label, bloco)
+        return self.lru.LRU(self, label, bloco)
