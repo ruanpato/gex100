@@ -1,4 +1,4 @@
-from Cell import *
+from Cell import Cell
 
 class Line:
     def __init__(self, label):
