@@ -58,12 +58,12 @@ class MemoryCache:
         quadroA = self.line[conjunto]
         quadroB = self.line[findB(conjunto)]
         
-        if quadroA.label == label
+        if quadroA.label == label:
             return quadroA
-        elif quadroB == label
+        elif quadroB == label:
             return quadroB
         else:
-            return false
+            return False
         
         # Conjunto é o 3, ele tem duas possiblidade, verificar o conjunto
         # ja que o conjunto é de 0 a 7, então o 3
