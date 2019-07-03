@@ -94,18 +94,18 @@ class MemoryCache:
         
         info = self.verifyConjunto(label, conjunto)
 
-        if info != false:
+        if info != False:
             # retorna o quadro em que a informação se encontra
             return info
 
         # Se o quadro não estiver na cache é preciso buscar da cache o bloco! 
         
-        bloco = mainMemory.readBlock(numBlock)
+        bloco = mainMemory.readBlock(label) # NumBlock
         
         # LRU VEM AQUI PRA SABER em qual quadro sera escrito a informação MUDANÇAS NA MEMÓRIA #
         
         # LRU RETORNA QUADRO PARA ESSA FUNÇÃO!
-        return self.LRU(self, conjunto)
+        return self.LRU(conjunto)
 
     def LRU(self, conjunto):
         return 0 if self.line[conjunto].recentlyUsed < self.line[conjunto+4].recentlyUsed else 1
