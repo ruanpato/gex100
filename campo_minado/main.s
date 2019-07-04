@@ -17,7 +17,6 @@
 jal		main				                        # jump to main and save position to $ra
 
 main:
-
         # Seleciona opção #
         la		$a0, msg_seleciona_opc		            # Carrega o endereço do array .asciiz referente a mensagem de selecionar a opção
         li		$v0, 4                                  # $v0 = 4 Argumento para imprimir array(string) via syscall(MARS)
@@ -36,11 +35,6 @@ main:
         li      $v0, 4
         syscall
         jal     imprime_matriz_sistema
-
-        li      $a1, 0
-        lw      $a0, matriz_sistema($a1)
-        li      $v0, 11
-        syscall
 
         j       seleciona_jogar_novamente               # Verifica se o usuário deseja jogar novamente    
         la		$a0, msg_test_fim_main		            # Carrega o endereço do array .asciiz referente a mensagem de selecionar a opção
@@ -453,3 +447,65 @@ imprime_matriz_sistema:
                 li      $v0, 11                                             # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
                 syscall
                 jr      $ra
+
+calcula_bombas:
+    add     $t0, $zero, $zero           # Inicia i
+    add     $t1, $zero, $zero           # Posição na word
+    addi    $t9, $zero, 9               # Valor a ser comparado
+    j     calcula_bombas          # Pula para calcula bombas
+
+    loop_calcula_bombas:    beq     $t0, $s1, fim_loop_calcula_bombas
+        add     $s4, $zero, $zero           # Valor a ser colocado na matriz
+        lw      $t2, matriz_sistema($t1)                            # Carrega o valor do vetor em um registrador temporario
+        beq     $t2, $t9, incrementa_retorna_loop_calcula_bombas    # Verifica se o valor é 9
+        
+        addi    $sp, $sp, 4                             # Incrementa o stackpointer
+        sw      $ra, 0($sp)                             # Salva o endereço de retorno em $sp
+        jal     verificando_acima
+        lw      $ra, 0($sp)                             # Carrega o endereço de retorno em $ra
+        addi    $sp, $sp, -4                            # Decrementa o stackpointer
+
+        
+        incrementa_retorna_loop_calcula_bombas:
+            addi    $t0, $t0, 1                 # Incrementa a variável de controle (i)
+            addi    $t1, $t1, 4                 # Incrementa a posição na word
+            jr      $ra
+
+        # if (i-num_linhas > 0 && campo[i-numlinhas] == 9) contador += 1
+        verificando_acima:
+            addi    $t5, $zero, 1                   # $t5 = 1
+            sub     $t3, $t0, $s0                   # $t3 = i-n
+            slt     $t4, $t3, $t5                   # Se i-num_linhas < 1 ? 1 : 0
+            beq     $t4, $zero, verificando_0_1     # Segunda parte da verificação
+            jr  	$ra				                # Retorna para a linha de onde foi chamada a função
+            verificando_acima_1:
+                lw      $t5, matriz_sistema($t3)
+                beq     $t5, $t9, incrementa_calculo_em_1        # Incrementa 1 em $s4
+                jr      $ra
+        # if (i+num_linhas < num_linhas*num_linhas && campo[i+num_linhas] == 9)
+        verificando_abaixo:
+            addi    $t5, $zero, 1               # 1
+            add     $t3, $t0, $s0               # i+n
+            slt     $t4, $t3, $s1               # $t4 = i+n < n*n ? 1 : 0
+            beq     $t4, $t5, verificando_1_1  # Se então
+            jr      $ra
+            verificando_abaixo_1:
+                lw      $t5, matriz_sistema($t3)
+                beq     $t5, $t9, incrementa_calculo_em_1
+                jr      $ra
+        verificando_a_esquerda:
+            addi    $t5, $zero, 1               # 1
+            sub     $t3, $t0, $t5               # $t3 = i-1
+            slt     $t4, $t3, $zero             # $t4 = (i-1) < 0 ? 1 : 0
+            beq     $t4, $zero, verificando_a_esquerda_1
+            jr      $ra
+            verificando_a_esquerda_1:
+            
+
+
+        incrementa_calculo_em_1:
+            addi    $s4, $s4, 1                 # $s4 += 1
+            sw      $s4, matriz_sistema($t1)    # Coloca na matriz o valor calculado
+            jr      $ra
+    fim_loop_calcula_bombas:
+        jr      $ra 
