@@ -3,6 +3,10 @@ from MainMemory import *
 
 from bitarray import bitarray
 
+mainMemory = MainMemory()
+
+memoryCache = MemoryCache()
+
 def readContentFromMemory():
     memoryAdress = input("Digite o endereço de memória em hexa. Ex: 0x12: ")
     adressInteger = int(memoryAdress, 16)
@@ -13,7 +17,7 @@ def readContentFromMemory():
     bloco = memoryCache.isHere(arrayBits)
 
     if bloco == None:
-        bloco = leBlocoMemoria(arrayBits, mainMemory)
+        bloco = memoryCache.leBlocoMemoria(arrayBits, mainMemory)
     
     print("Conteudo lido para a memória com sucesso!")
     
@@ -37,11 +41,11 @@ def writeContentInMemory():
 
     # Se não, ler o endereço de memoria na cache
     if bloco == None:
-        bloco = leBlocoMemoria(arrayBits, mainMemory)
+        bloco = memoryCache.leBlocoMemoria(arrayBits, mainMemory)
         
     # Escrever os dados na cache
     
-    memoryCache.writeData(arrayBits, dados)
+    mainMemory.writeData(arrayBits, dados)
     
     
     pass
@@ -56,11 +60,6 @@ messageInput += "3 - Estatisticas\n"
 messageInput += "4 - Mostrar toda memória principal\n"
 messageInput += "5 - Mostrar toda memória cache\n"
 messageInput += "6 - Encerrar o programa\n"
-
-
-mainMemory = MainMemory()
-
-memoryCache = MemoryCache()
 
 #info = ['00000000', '00000001', '00000010', '00000011']
 

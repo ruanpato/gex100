@@ -70,7 +70,7 @@ class MemoryCache:
         
         pass
     
-    def getInfoFromBits(bitArray):
+    def getInfoFromBits(self, bitArray):
         number = bitArray.to01()
         
         # verificar o tamanho do número, ele obrigatoriamente tem 8 digitos
@@ -141,7 +141,7 @@ class MemoryCache:
         mainMemory.writeBlock(line.line, line.label)
         pass
 
-    def LRU(self, mainMemory, conjunto, bloco, label):
+    def LRU(self, mainMemory, conjunto, block, label):
         if self.line[conjunto].recentlyUsed < self.line[conjunto + 4].recentlyUsed:
             # Se o conjunto for o menor utilizado, aumentar o contador dele e associar o bloco ao mesmo
             self.line[conjunto].recentlyUsed = 1
