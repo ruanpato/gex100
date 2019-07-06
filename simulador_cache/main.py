@@ -45,7 +45,6 @@ def writeContentInMemory():
         bloco = memoryCache.leBlocoMemoria(arrayBits, mainMemory)
         
     # Escrever os dados na cache
-    
     memoryCache.writeData(arrayBits, dados)
     
     
