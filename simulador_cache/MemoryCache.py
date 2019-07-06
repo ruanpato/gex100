@@ -1,5 +1,5 @@
 from Line import Line
-
+from bitarray import bitarray
 '''
 Será utilizado a seguinte lógica para determinar em qual quadro está a linha:
 [0,3] = Quadro A
@@ -188,10 +188,10 @@ class MemoryCache:
         # Altera o status updated e atribui o valor
         if self.line[info['conjunto']].label == info['label']:
             self.line[info['conjunto']].updated = True
-            self.line[info['conjunto']].line[deslocamento] = dados
-        if self.line[info['cojunto']+4].label == info['label']:
+            self.line[info['conjunto']].line[deslocamento].writeInCell(dados)
+        if self.line[info['conjunto']+4].label == info['label']:
             self.line[info['conjunto']+4].updated = True
-            self.line[info['conjunto']+4].line[deslocamento] = dados
+            self.line[info['conjunto']+4].line[deslocamento].writeInCell(dados)
         # Altera os recentemente usados
         self.line[info['conjunto']].recentlyUsed = 0 if self.line[info['conjunto']].recentlyUsed > 0 else 1
         self.line[info['conjunto']+4].recentlyUsed = 0 if self.line[info['conjunto']].recentlyUsed > 0 else 1
