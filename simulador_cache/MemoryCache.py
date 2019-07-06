@@ -62,7 +62,7 @@ class MemoryCache:
         elif quadroB == label:
             return quadroB
         else:
-            return False
+            return None
         
         # Conjunto é o 3, ele tem duas possiblidade, verificar o conjunto
         # ja que o conjunto é de 0 a 7, então o 3
@@ -91,20 +91,38 @@ class MemoryCache:
         label = int(number[ : 5], 2)
         conjunto = int(number[-4 : -2], 2)
         
-        info = self.verifyConjunto(label, conjunto)
+        # O quadro é uma das linhas da cache
+        
+        quadro = self.verifyConjunto(label, conjunto)
 
-        if info != False:
+        if quadro:
             # retorna o quadro em que a informação se encontra
-            return info
+            return quadro
 
         # Se o quadro não estiver na cache é preciso buscar da cache o bloco! 
+        
+        
+        # Aqui a estatistica de acertos/Erros entra
         
         bloco = mainMemory.readBlock(label) # NumBlock
         
         # LRU VEM AQUI PRA SABER em qual quadro sera escrito a informação MUDANÇAS NA MEMÓRIA #
         
         # LRU RETORNA QUADRO PARA ESSA FUNÇÃO!
-        return self.LRU(conjunto)
+        quadroSubstituicao = self.LRU(conjunto, bloco, label)
+        
+        # Alterar o recently used de ambos os qaudros
 
-    def LRU(self, conjunto):
-        return 0 if self.line[conjunto].recentlyUsed < self.line[conjunto+4].recentlyUsed else 1
+    def LRU(self, conjunto, bloco, label):
+        if self.line[conjunto].recentlyUsed < self.line[conjunto + 4].recentlyUsed
+            # Se o conjunto for o menor utilizado, aumentar o contador dele e associar o bloco ao mesmo
+            self.line[conjunto].recentlyUsed = 1
+            self.line[conjunto].line = block
+            self.line[conjunto].label = label            
+            
+            # O contador do outro conjunto tem que ser 0
+            self.line[conjunto + 4].recentlyUsed = 0
+            
+            return self.line[conjunto]
+        else
+            return self.line[conjunto + 4]
