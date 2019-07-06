@@ -23,6 +23,7 @@ class MemoryCache:
         self.line = []
         # cada linha tem o tamanho de um bloco
         # logo cada linha sera composta de 4 celulas
+        
         for i in range(8):                
             self.line.append(Line(i))
     
@@ -69,7 +70,7 @@ class MemoryCache:
         
         pass
     
-    def isHere(self, bitArray, mainMemory):
+    def getInfoFromBits(bitArray):
         number = bitArray.to01()
         
         # verificar o tamanho do número, ele obrigatoriamente tem 8 digitos
@@ -86,11 +87,20 @@ class MemoryCache:
         
         number = zeros + number
         
-        print(number)
-        
         label = int(number[ : 5], 2)
         conjunto = int(number[-4 : -2], 2)
         
+        return {
+            "label": label,
+            "conjunto": conjunto
+        }
+    
+    def isHere(self, bitArray):
+        
+        info = self.getInfoFromBits(bitArray)
+
+        conjunto = info['label']
+        label = info['conjunto']
         # O quadro é uma das linhas da cache
         
         quadro = self.verifyConjunto(label, conjunto)
@@ -98,7 +108,17 @@ class MemoryCache:
         if quadro:
             # retorna o quadro em que a informação se encontra
             return quadro
+        else
+            return None
+        
+        pass
+    
+    def leBlocoMemoria(self, bitArray, mainMemory):
+        info = self.getInfoFromBits(bitArray)
 
+        conjunto = info['label']
+        label = info['conjunto']
+        
         # Se o quadro não estiver na cache é preciso buscar da cache o bloco! 
         
         
@@ -109,11 +129,19 @@ class MemoryCache:
         # LRU VEM AQUI PRA SABER em qual quadro sera escrito a informação MUDANÇAS NA MEMÓRIA #
         
         # LRU RETORNA QUADRO PARA ESSA FUNÇÃO!
-        quadroSubstituicao = self.LRU(conjunto, bloco, label)
+        bloco = self.LRU(mainMemory, conjunto, bloco, label)
+        
+        return bloco
         
         # Alterar o recently used de ambos os qaudros
+        
+    
+    def escritaRetorno(self, mainMemory, line):
+        # Pega a informação da linha e a escreve na memoria
+        mainMemory.writeBlock(line.line, line.label)
+        pass
 
-    def LRU(self, conjunto, bloco, label):
+    def LRU(self, mainMemory, conjunto, bloco, label):
         if self.line[conjunto].recentlyUsed < self.line[conjunto + 4].recentlyUsed
             # Se o conjunto for o menor utilizado, aumentar o contador dele e associar o bloco ao mesmo
             self.line[conjunto].recentlyUsed = 1
@@ -123,6 +151,29 @@ class MemoryCache:
             # O contador do outro conjunto tem que ser 0
             self.line[conjunto + 4].recentlyUsed = 0
             
+            if self.line[conjunto].updated:
+                # Se o bloco foi alterado anteriormente ele precisar ser escrito na memória principal
+                # antes de ser reescrito na cache
+                self.escritaRetorno(mainMemory, self.line[conjunto])
+                self.line[conjunto].updated = False
+                pass
+            
+            
             return self.line[conjunto]
         else
+        # Se o conjunto for o menor utilizado, aumentar o contador dele e associar o bloco ao mesmo
+            self.line[conjunto + 4].recentlyUsed = 1
+            self.line[conjunto + 4].line = block
+            self.line[conjunto + 4].label = label            
+            
+            # O contador do outro conjunto tem que ser 0
+            self.line[conjunto].recentlyUsed = 0
+            
+            if self.line[conjunto + 4].updated:
+                # Se o bloco foi alterado anteriormente ele precisar ser escrito na memória principal
+                # antes de ser reescrito na cache
+                self.escritaRetorno(mainMemory, self.line[conjunto + 4])
+                self.line[conjunto + 4].updated = False
+                pass
+            
             return self.line[conjunto + 4]

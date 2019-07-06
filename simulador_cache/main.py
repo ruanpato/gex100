@@ -10,14 +10,39 @@ def readContentFromMemory():
     arrayBits = bitarray(adressBits)
     
     # Verificar se esta na cache
-    a = memoryCache.isHere(arrayBits, mainMemory)
+    bloco = memoryCache.isHere(arrayBits)
+
+    if bloco == None:
+        bloco = leBlocoMemoria(arrayBits, mainMemory)
     
     print("Conteudo lido para a memória com sucesso!")
     
-    print(a)
+    #ler apenas a celula certa a partir do deslicamento do bloco
+    
+    celula = bloco.leDeslocamento(arrayBits[-2])
+    
+    print(celula)
     pass
 
 def writeContentInMemory():
+    memoryAdress = input("Digite o endereço de memória em hexa. Ex: 0x12: ")
+    dados = input("Digite os dados que serão armazenados")
+    
+    adressInteger = int(memoryAdress, 16)
+    adressBits = bin(adressInteger)[2:]
+    arrayBits = bitarray(adressBits)
+    
+    # Verificar se esta na memoria cache 
+    bloco = memoryCache.isHere(arrayBits)
+
+    # Se não, ler o endereço de memoria na cache
+    if bloco == None:
+        bloco = leBlocoMemoria(arrayBits, mainMemory)
+        
+    # Escrever os dados na cache
+    
+    memoryCache.writeData(arrayBits, dados)
+    
     
     pass
 
