@@ -177,3 +177,9 @@ class MemoryCache:
                 pass
             
             return self.line[conjunto + 4]
+        
+        
+def writeData(self, arrayBits, dados):
+    
+    
+    pass

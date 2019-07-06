@@ -34,16 +34,13 @@ class MainMemory:
     
     pass
 
-def writeData(self, arrayBits, dados):
-    
-    
-    pass
 
-    # A info deve ser uma lista de 4 strings
-    # Cada string deve conter 8 caracteres em forma de bits
-    # Ex: '00000000'
-    def writeBlock(self, novoBloco, label):
-        block = self.readBlock(label)
-        
-        for i in range(4):
-            block[i].writeInCell(novoBloco[i])
+# A info deve ser uma lista de 4 strings
+# Cada string deve conter 8 caracteres em forma de bits
+# Ex: '00000000'
+
+def writeBlock(self, novoBloco, label):
+    block = self.readBlock(label)
+    
+    for i in range(4):
+        block[i].writeInCell(novoBloco[i])

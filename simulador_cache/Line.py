@@ -13,7 +13,7 @@ class Line:
     def setRecentlyUsed(self, recentlyUsed):
         self.recentlyUsed = recentlyUsed
         
-    def leDeslocamento(desAsBinary):
+    def leDeslocamento(self, desAsBinary):
         deslocamento = int(desAsBinary, 2)
         
         return self.line[deslocamento]

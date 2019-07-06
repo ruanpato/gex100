@@ -12,6 +12,7 @@ def readContentFromMemory():
     adressInteger = int(memoryAdress, 16)
     adressBits = bin(adressInteger)[2:]
     arrayBits = bitarray(adressBits)
+    arrayAsString = arrayBits.to01()
     
     # Verificar se esta na cache
     bloco = memoryCache.isHere(arrayBits)
@@ -23,7 +24,7 @@ def readContentFromMemory():
     
     #ler apenas a celula certa a partir do deslicamento do bloco
     
-    celula = bloco.leDeslocamento(arrayBits[-2])
+    celula = bloco.leDeslocamento(arrayAsString[-2:])
     
     print(celula)
     pass
@@ -45,7 +46,7 @@ def writeContentInMemory():
         
     # Escrever os dados na cache
     
-    mainMemory.writeData(arrayBits, dados)
+    memoryCache.writeData(arrayBits, dados)
     
     
     pass
