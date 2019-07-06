@@ -116,18 +116,16 @@ class MemoryCache:
     def leBlocoMemoria(self, bitArray, mainMemory):
         info = self.getInfoFromBits(bitArray)
 
-        conjunto = info['label']
-        label = info['conjunto']
+        conjunto = info['conjunto']
+        label = info['label']
         
         # Se o quadro não estiver na cache é preciso buscar da cache o bloco! 
-        
+        bloco = mainMemory.readBlock(label) # NumBlock
         
         # Aqui a estatistica de acertos/Erros entra
         
-        bloco = mainMemory.readBlock(label) # NumBlock
         
         # LRU VEM AQUI PRA SABER em qual quadro sera escrito a informação MUDANÇAS NA MEMÓRIA #
-        
         # LRU RETORNA QUADRO PARA ESSA FUNÇÃO!
         bloco = self.LRU(mainMemory, conjunto, bloco, label)
         
@@ -180,6 +178,21 @@ class MemoryCache:
         
         
     def writeData(self, arrayBits, dados):
-        
-        
+        # Pega o label e o conjunto
+        info = self.getInfoFromBits(arrayBits)
+        # Convert to string
+        stringBits = arrayBits.to01()
+        stringBits = stringBits[-2:]
+        # Pega o deslocamento
+        deslocamento = self.line[0].leDeslocamento(stringBits)
+        # Altera o status updated e atribui o valor
+        if self.line[info['conjunto']].label == info['label']:
+            self.line[info['conjunto']].updated = True
+            self.line[info['conjunto']].line[deslocamento] = dados
+        if self.line[info['cojunto']+4].label == info['label']:
+            self.line[info['conjunto']+4].updated = True
+            self.line[info['conjunto']+4].line[deslocamento] = dados
+        # Altera os recentemente usados
+        self.line[info['conjunto']].recentlyUsed = 0 if self.line[info['conjunto']].recentlyUsed > 0 else 1
+        self.line[info['conjunto']+4].recentlyUsed = 0 if self.line[info['conjunto']].recentlyUsed > 0 else 1
         pass
