@@ -108,7 +108,7 @@ class MemoryCache:
         if quadro:
             # retorna o quadro em que a informação se encontra
             return quadro
-        else
+        else:
             return None
         
         pass
@@ -142,7 +142,7 @@ class MemoryCache:
         pass
 
     def LRU(self, mainMemory, conjunto, bloco, label):
-        if self.line[conjunto].recentlyUsed < self.line[conjunto + 4].recentlyUsed
+        if self.line[conjunto].recentlyUsed < self.line[conjunto + 4].recentlyUsed:
             # Se o conjunto for o menor utilizado, aumentar o contador dele e associar o bloco ao mesmo
             self.line[conjunto].recentlyUsed = 1
             self.line[conjunto].line = block
@@ -160,7 +160,7 @@ class MemoryCache:
             
             
             return self.line[conjunto]
-        else
+        else:
         # Se o conjunto for o menor utilizado, aumentar o contador dele e associar o bloco ao mesmo
             self.line[conjunto + 4].recentlyUsed = 1
             self.line[conjunto + 4].line = block
