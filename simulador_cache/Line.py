@@ -15,5 +15,5 @@ class Line:
         
     def leDeslocamento(self, desAsBinary):
         deslocamento = int(desAsBinary, 2)
-        
-        return self.line[deslocamento]
+        return deslocamento
+        #return self.line[deslocamento]
