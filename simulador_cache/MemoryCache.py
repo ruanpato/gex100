@@ -196,3 +196,30 @@ class MemoryCache:
         self.line[info['conjunto']].recentlyUsed = 0 if self.line[info['conjunto']].recentlyUsed > 0 else 1
         self.line[info['conjunto']+4].recentlyUsed = 0 if self.line[info['conjunto']].recentlyUsed > 0 else 1
         pass
+    
+    def printAllCells(self):
+        for i in range(4):
+            quadroA = self.line[i]
+            quadroB = self.line[i + 4]
+            
+            self.printAsQuadros(i, quadroA, quadroB)
+
+        pass
+    
+    def printAsQuadros(self, numeroConjunto, qA, qB):
+        print("---Conjunto {}---".format(numeroConjunto + 1))
+        print("\nQuadro A")
+        
+        for (i, cell) in enumerate(qA.line):
+            print("Célula {}:".format(i + 1), end=" ")
+            cell.printCell()
+        
+        print("\nQuadro B")
+        
+        for (i, cell) in enumerate(qB.line):
+            print("Célula {}:".format(i + 1), end=" ")
+            cell.printCell()
+        
+        print("\n")
+
+    pass
