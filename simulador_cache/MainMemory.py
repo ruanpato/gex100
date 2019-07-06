@@ -5,7 +5,7 @@ class MainMemory:
         self.cells = []
         self.blocks = 32
         
-        for i in range(128):
+        for _ in range(128):
             newCell = Cell.Cell()
             self.cells.append(newCell)
             

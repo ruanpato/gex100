@@ -1,4 +1,4 @@
-from Line import *
+from Line import Line
 
 '''
 Será utilizado a seguinte lógica para determinar em qual quadro está a linha:
@@ -82,7 +82,7 @@ class MemoryCache:
         if tam < 8:
             dif = 8 - tam
             
-            for j in range(dif):
+            for _ in range(dif):
                 zeros += "0"
         
         number = zeros + number
@@ -179,7 +179,7 @@ class MemoryCache:
             return self.line[conjunto + 4]
         
         
-def writeData(self, arrayBits, dados):
-    
-    
-    pass
+    def writeData(self, arrayBits, dados):
+        
+        
+        pass
