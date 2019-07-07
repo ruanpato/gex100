@@ -264,7 +264,6 @@ while True:
         
     elif option == 5:
         #print all from cache
-        memoryCache.printAllCells()        
-        pass
+        memoryCache.printAllCellsCache()
     elif option == 6:
         break
