@@ -50,8 +50,8 @@ class MemoryCache:
     '''
     
     def verifyConjunto(self, label, conjunto):
-        print("Label é {}".format(label))
-        print("Conjunto é {}".format(conjunto))
+        #print("Label é {}".format(label))
+        #print("Conjunto é {}".format(conjunto))
         
         findB = lambda x: x + 4
         
@@ -71,24 +71,30 @@ class MemoryCache:
         pass
     
     def getInfoFromBits(self, bitArray):
-        number = bitArray.to01()
+        bits = bitArray.to01()
         
-        # verificar o tamanho do número, ele obrigatoriamente tem 8 digitos
-        
-        tam = len(bitArray)
-        
+        numBits = len(bits)
+    
         zeros = ""
         
-        if tam < 8:
-            dif = 8 - tam
+        if(numBits < 8):
+            dif = 7 - numBits
             
             for _ in range(dif):
                 zeros += "0"
         
-        number = zeros + number
+        res = zeros + bits
+
+        #print(int(res[:5], 2))
+        #print(res[:5])
+        # BBB BB PP DD
+        conjunto = int(res[-4:-2], 2)
+        label = int(res[ : 5], 2)
         
-        label = int(number[ : 5], 2)
-        conjunto = int(number[-4 : -2], 2)
+        
+        #print("Conjunto: ", conjunto)
+        #print("Label", label)
+        
         
         return {
             "label": label,
@@ -99,8 +105,8 @@ class MemoryCache:
         
         info = self.getInfoFromBits(bitArray)
 
-        conjunto = info['label']
-        label = info['conjunto']
+        conjunto = info['conjunto']
+        label = info['label']
         # O quadro é uma das linhas da cache
         
         quadro = self.verifyConjunto(label, conjunto)

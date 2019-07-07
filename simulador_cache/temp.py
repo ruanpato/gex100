@@ -51,7 +51,8 @@ for i in range(128):
     #print(int(res[:5], 2))
     #print(res[:5])
     # BBB BB PP DD
-    print(int(res[-4:-2], 2))
+    conjunto = int(res[-4:-2], 2) 
+    print("{} Endereço de memória: {} Conjunto: {}".format(i, hex(i), conjunto))
     
     
     #print(ultimos)
