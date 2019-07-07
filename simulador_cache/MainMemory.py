@@ -14,6 +14,7 @@ class MainMemory:
             print("{} - {}:    ".format(i, hex(i)) , end="")
             cell.printCell()
 
+
     def readBlock(self, numBlock):
         startBlock = numBlock * 4
         #startBlock = startBlock - 4
