@@ -24,7 +24,11 @@ for i in range(128):
     #print("{} Endereço de memória: {} Conjunto: {}".format(i, hex(i), conjunto))
     conjuntos[conjunto].append(hex(i))
 for i in sorted(conjuntos.keys()):
-    print("Conjunto:" ,i,':',sep='')
+    print("Conjunto:" ,i,sep='')
     for j in range(0, len(conjuntos[i])):
-        print(conjuntos[i][j],end='- ')
+        print(conjuntos[i][j],end='')
+        if((j+1)%4==0 and j != 0):
+            print()
+        else:
+            print(end='- ')
     print()
