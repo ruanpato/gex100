@@ -29,7 +29,6 @@ def readContentFromMemory():
     celula = bloco.leDeslocamento(arrayAsString[-2:])
     
     print(celula)
-    pass
 
 def writeContentInMemory():
     memoryAdress = input("Digite o endereço de memória em hexa. Ex: 0x12: ")
@@ -50,8 +49,6 @@ def writeContentInMemory():
     
     # Escrever os dados na cache
     memoryCache.writeData(arrayBits, bitsDados)
-    
-    pass
 
 def findTwoscomplement(valor): 
     n = len(valor) 
