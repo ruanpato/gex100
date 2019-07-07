@@ -10,6 +10,7 @@ memoryCache = MemoryCache()
 
 def readContentFromMemory():
     memoryAdress = input("Digite o endereço de memória em hexa. Ex: 0x12: ")
+    memoryAdress = verificaEndereco(memoryAdress, 0)
     adressInteger = int(memoryAdress, 16)
     adressBits = bin(adressInteger)[2:]
     arrayBits = bitarray(adressBits)
@@ -32,6 +33,7 @@ def readContentFromMemory():
 
 def writeContentInMemory():
     memoryAdress = input("Digite o endereço de memória em hexa. Ex: 0x12: ")
+    memoryAdress = verificaEndereco(memoryAdress, 0)
     dados = input("Digite os dados que serão armazenados: ")
     bitsDados = verificaEntrada(dados, 0)
     
@@ -49,25 +51,24 @@ def writeContentInMemory():
     # Escrever os dados na cache
     memoryCache.writeData(arrayBits, bitsDados)
     
-    
     pass
 
-def findTwoscomplement(str): 
-    n = len(str) 
+def findTwoscomplement(valor): 
+    n = len(valor) 
   
-    # Traverse the string to get first  
-    # '1' from the last of string 
+    # Traverse the valoring to get first  
+    # '1' from the last of valoring 
     i = n - 1
     while(i >= 0): 
-        if (str[i] == '1'): 
+        if (valor[i] == '1'): 
             break
   
         i -= 1
   
     # If there exists no '1' concatenate 1  
-    # at the starting of string 
+    # at the starting of valoring 
     if (i == -1): 
-        return '1'+str
+        return '1'+valor
   
     # Continue traversal after the  
     # position of first '1' 
@@ -75,19 +76,40 @@ def findTwoscomplement(str):
     while(k >= 0): 
           
         # Just flip the values 
-        if (str[k] == '1'): 
-            str = list(str) 
-            str[k] = '0'
-            str = ''.join(str) 
+        if (valor[k] == '1'): 
+            valor = list(valor) 
+            valor[k] = '0'
+            valor = ''.join(valor) 
         else: 
-            str = list(str) 
-            str[k] = '1'
-            str = ''.join(str) 
+            valor = list(valor) 
+            valor[k] = '1'
+            valor = ''.join(valor) 
   
         k -= 1
-  
-    # return the modified string 
-    return str
+    valor = complete8Bits(valor)
+    # return the modified valoring 
+    return valor
+
+def complete8Bits(entrada):
+    aux = ''
+    i = 8-len(entrada)
+    for _ in range(0, i):
+        aux+='0'
+    aux += entrada
+    return aux
+
+def verificaEndereco(entrada, flag):
+    if(flag == 1):
+        clearConsole()
+        entrada = input("Endereço inválido!\nDigite um endereço entre 0x00(dec=0) a 0x7f(dec=127): ")
+    try:
+        hexa = int(entrada, 16)
+        if hexa >= 0x00 and hexa <= 0x7f : # 128 células
+            return entrada
+        else:
+            verificaEndereco(entrada, 1)
+    except:
+        verificaEndereco(entrada, 1)
 
 def clearConsole():
     os.system('cls' if os.name == 'nt' else 'clear')
