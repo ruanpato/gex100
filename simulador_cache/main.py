@@ -19,6 +19,7 @@ def readContentFromMemory():
     # Verificar se esta na cache
     bloco = memoryCache.isHere(arrayBits)
 
+    # Busca na memória
     if bloco == None:
         bloco = memoryCache.leBlocoMemoria(arrayBits, mainMemory)
     

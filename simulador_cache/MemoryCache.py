@@ -143,7 +143,6 @@ class MemoryCache:
     def escritaRetorno(self, mainMemory, line):
         # Pega a informação da linha e a escreve na memoria
         mainMemory.writeBlock(line.line, line.label)
-        pass
 
     def LRU(self, mainMemory, conjunto, block, label):
         if self.line[conjunto].recentlyUsed < self.line[conjunto + 4].recentlyUsed:
