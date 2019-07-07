@@ -60,15 +60,13 @@ class MemoryCache:
         
         if quadroA.label == label:
             return quadroA
-        elif quadroB == label:
+        elif quadroB.label == label:
             return quadroB
         else:
             return None
         
         # Conjunto é o 3, ele tem duas possiblidade, verificar o conjunto
         # ja que o conjunto é de 0 a 7, então o 3
-        
-        pass
     
     def getInfoFromBits(self, bitArray):
         bits = bitArray.to01()
