@@ -138,7 +138,11 @@ class MemoryCache:
         return bloco
         
         # Alterar o recently used de ambos os qaudros
-        
+    
+    def thisQuadro(self, conjunto, label):
+        if(self.line[conjunto].label == label):
+            return 'A'
+        return 'B'
     
     def escritaRetorno(self, mainMemory, line):
         # Pega a informação da linha e a escreve na memoria
