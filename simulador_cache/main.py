@@ -118,7 +118,7 @@ def verificaEndereco(entrada, flag):
         entrada = input("Endereço inválido!\nDigite um endereço entre 0x00(dec=0) a 0x7f(dec=127): ")
     try:
         hexa = int(entrada, 16)
-        if hexa >= 0x00 and hexa <= 0x7f : # 128 células
+        if hexa >= 0 and hexa <= 127 : # 128 células
             return entrada
         else:
             verificaEndereco(entrada, 1)
