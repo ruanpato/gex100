@@ -33,14 +33,15 @@ def readContentFromMemory(acertos, faltas):
     #ler apenas a celula certa a partir do deslocamento do bloco
     info = memoryCache.getInfoFromBits(arrayBits)
     conjunto = info['conjunto']
-    label = info['label']    
+    label = info['label']
+    quadro = memoryCache.thisQuadro(conjunto, label)
     deslocamento = bloco.leDeslocamento(arrayAsString[-2:])
     
-    print("Endereço: ", hex(adressInteger))
-    print("O Bloco é: ", label)
-    print("O Quadro é: TODO")    
-    print("O Conjunto é: ", conjunto)
-    print("O Deslocamento é: ", deslocamento)
+    print("Endereço:", hex(adressInteger))
+    print("O Bloco é:", label)
+    print("O Quadro é:", quadro)    
+    print("O Conjunto é:", conjunto)
+    print("O Deslocamento é:", deslocamento)
     print("Dados: ", end = "")
     bloco.line[deslocamento].printCell()
 
