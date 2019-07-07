@@ -147,6 +147,12 @@ class MemoryCache:
 
     def LRU(self, mainMemory, conjunto, block, label):
         if self.line[conjunto].recentlyUsed < self.line[conjunto + 4].recentlyUsed:
+            if self.line[conjunto].updated:
+                # Se o bloco foi alterado anteriormente ele precisar ser escrito na memória principal
+                # antes de ser reescrito na cache
+                self.escritaRetorno(mainMemory, self.line[conjunto])
+                self.line[conjunto].updated = False
+
             # Se o conjunto for o menor utilizado, aumentar o contador dele e associar o bloco ao mesmo
             self.line[conjunto].recentlyUsed = 1
             self.line[conjunto].line = block
@@ -155,16 +161,14 @@ class MemoryCache:
             # O contador do outro conjunto tem que ser 0
             self.line[conjunto + 4].recentlyUsed = 0
             
-            if self.line[conjunto].updated:
-                # Se o bloco foi alterado anteriormente ele precisar ser escrito na memória principal
-                # antes de ser reescrito na cache
-                self.escritaRetorno(mainMemory, self.line[conjunto])
-                self.line[conjunto].updated = False
-                pass
-            
-            
             return self.line[conjunto]
         else:
+            if self.line[conjunto + 4].updated:
+                # Se o bloco foi alterado anteriormente ele precisar ser escrito na memória principal
+                # antes de ser reescrito na cache
+                self.escritaRetorno(mainMemory, self.line[conjunto + 4])
+                self.line[conjunto + 4].updated = False
+
         # Se o conjunto for o menor utilizado, aumentar o contador dele e associar o bloco ao mesmo
             self.line[conjunto + 4].recentlyUsed = 1
             self.line[conjunto + 4].line = block
@@ -172,13 +176,6 @@ class MemoryCache:
             
             # O contador do outro conjunto tem que ser 0
             self.line[conjunto].recentlyUsed = 0
-            
-            if self.line[conjunto + 4].updated:
-                # Se o bloco foi alterado anteriormente ele precisar ser escrito na memória principal
-                # antes de ser reescrito na cache
-                self.escritaRetorno(mainMemory, self.line[conjunto + 4])
-                self.line[conjunto + 4].updated = False
-                pass
             
             return self.line[conjunto + 4]
         
@@ -195,13 +192,16 @@ class MemoryCache:
         if self.line[info['conjunto']].label == info['label']:
             self.line[info['conjunto']].updated = True
             self.line[info['conjunto']].line[deslocamento].writeInCell(dados)
+            self.line[info['conjunto']].recentlyUsed = 1
+            self.line[info['conjunto']+4].recentlyUsed = 0
         if self.line[info['conjunto']+4].label == info['label']:
             self.line[info['conjunto']+4].updated = True
             self.line[info['conjunto']+4].line[deslocamento].writeInCell(dados)
+            self.line[info['conjunto']].recentlyUsed = 0
+            self.line[info['conjunto']+4].recentlyUsed = 1
         # Altera os recentemente usados
-        self.line[info['conjunto']].recentlyUsed = 0 if self.line[info['conjunto']].recentlyUsed > 0 else 1
-        self.line[info['conjunto']+4].recentlyUsed = 0 if self.line[info['conjunto']].recentlyUsed > 0 else 1
-        pass
+        
+        #self.line[info['conjunto']].recentlyUsed = 0 if self.line[info['conjunto']+4].recentlyUsed > 0 else 1
     
     def printAllCells(self):
         for i in range(4):
