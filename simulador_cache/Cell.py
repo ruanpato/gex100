@@ -6,6 +6,9 @@ class Cell:
     
     def printCell(self):
         print(self.bits.to01())
+
+    def getCell(self):
+        return self.bits.to01()
     
     def writeInCell(self, bitsAsString):
         self.bits = bitarray(bitsAsString)
