@@ -8,7 +8,7 @@ mainMemory = MainMemory()
 
 memoryCache = MemoryCache()
 
-def readContentFromMemory():
+def readContentFromMemory(acertos, faltas):
     memoryAdress = input("Digite o endereço de memória em hexa. Ex: 0x12: ")
     memoryAdress = verificaEndereco(memoryAdress, 0)
     adressInteger = int(memoryAdress, 16)
@@ -19,19 +19,32 @@ def readContentFromMemory():
     # Verificar se esta na cache
     bloco = memoryCache.isHere(arrayBits)
 
-    # Busca na memória
     if bloco == None:
         bloco = memoryCache.leBlocoMemoria(arrayBits, mainMemory)
+        faltas += 1
+        print("Valor não encontrado na memória cache!")
+    else:
+        acertos += 1
+        print("Valor encontrado na memória cache!")        
     
-    print("Conteudo lido para a memória com sucesso!")
     
-    #ler apenas a celula certa a partir do deslicamento do bloco
+    #print("Conteudo lido para a memória com sucesso!")
     
-    celula = bloco.leDeslocamento(arrayAsString[-2:])
+    #ler apenas a celula certa a partir do deslocamento do bloco
+    info = memoryCache.getInfoFromBits(arrayBits)
+    conjunto = info['conjunto']
+    label = info['label']    
+    deslocamento = bloco.leDeslocamento(arrayAsString[-2:])
     
-    print(celula)
+    print("Endereço: ", hex(adressInteger))
+    print("O Bloco é: ", label)
+    print("O Quadro é: TODO")    
+    print("O Conjunto é: ", conjunto)
+    print("O Deslocamento é: ", deslocamento)
+    print("Dados: ", end = "")
+    bloco.line[deslocamento].printCell()
 
-def writeContentInMemory():
+def writeContentInMemory(acertos, faltas):
     memoryAdress = input("Digite o endereço de memória em hexa. Ex: 0x12: ")
     memoryAdress = verificaEndereco(memoryAdress, 0)
     dados = input("Digite os dados que serão armazenados: ")
@@ -47,6 +60,9 @@ def writeContentInMemory():
     # Se não, ler o endereço de memoria na cache
     if bloco == None:
         bloco = memoryCache.leBlocoMemoria(arrayBits, mainMemory)
+        faltas += 1
+    else:
+        acertos += 1
     
     # Escrever os dados na cache
     memoryCache.writeData(arrayBits, bitsDados)
@@ -139,7 +155,17 @@ def statistics():
     
     pass
 
+# Main
+
+numeroEscrita = 0
+numeroLeitura = 0
+acertosEscrita = 0
+acertosLeitura = 0
+faltasEscrita = 0
+faltasLeitura = 0
+
 clearConsole()
+
 messageInput = "Digite:\n1 - Ler o conteúdo de um endereço de memória\n"
 messageInput += "2 - Escrever em um determinado endereço de memória\n"
 messageInput += "3 - Estatisticas\n"
@@ -160,10 +186,12 @@ while True:
         continue
 
     if option == 1:
-        readContentFromMemory()
+        readContentFromMemory(acertosLeitura, faltasLeitura)
+        numeroLeitura += 1
         
     elif option == 2:
-        writeContentInMemory()
+        writeContentInMemory(acertosEscrita, faltasEscrita)
+        numeroEscrita += 1
         
     elif option == 3:
         statistics()
