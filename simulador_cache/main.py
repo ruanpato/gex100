@@ -193,21 +193,21 @@ def statistics(numeroEscrita, numeroLeitura, acertosEscrita, acertosLeitura, fal
     clearConsole()
     
     print("-------------------ESCRITA---------------------")
-    print("|            Quantidade de Escrita: {}         |".format(numeroEscrita))
-    print("| Acertos absolutos:     {}  |  Porcentagem: {} |".format(acertosEscrita, porcentagemEscritaAcertos))
-    print("| Faltas absolutas:      {}  |  Porcentagem: {} |".format(faltasEscrita, porcentagemEscritaFaltas))
+    print("|            Quantidade de Escrita: {}          |".format(numeroEscrita))
+    print("| Acertos absolutos:     {}  |  Porcentagem: {}% |".format(acertosEscrita, porcentagemEscritaAcertos))
+    print("| Faltas absolutas:      {}  |  Porcentagem: {}% |".format(faltasEscrita, porcentagemEscritaFaltas))
     
     print("\n--------------------LEITURA--------------------")    
     
-    print("|           Quantidade de Leitura: {}          |".format(numeroLeitura))
-    print("| Acertos absolutos:     {}  |  Porcentagem: {} |".format(acertosLeitura, porcentagemLeituraAcertos))
-    print("| Faltas absolutas:      {}  |  Porcentagem: {} |".format(faltasLeitura, porcentagemLeituraFaltas))
+    print("|           Quantidade de Leitura: {}           |".format(numeroLeitura))
+    print("| Acertos absolutos:     {}  |  Porcentagem: {}% |".format(acertosLeitura, porcentagemLeituraAcertos))
+    print("| Faltas absolutas:      {}  |  Porcentagem: {}% |".format(faltasLeitura, porcentagemLeituraFaltas))
     
     print("\n-------------------GERAL-------------------")        
     
-    print("|            Quantidade Geral:  {}         |".format(numeroLeitura))
-    print("| Acertos absolutos: {}  |  Porcentagem: {} |".format(acertosGeral, acertosGeralPorcentagem))
-    print("| Faltas absolutas:  {}  |  Porcentagem: {} |".format(faltasGeral, faltasGeralPorcentagem))
+    print("|            Quantidade Geral:  {}          |".format(numeroLeitura))
+    print("| Acertos absolutos: {}  |  Porcentagem: {}% |".format(acertosGeral, acertosGeralPorcentagem))
+    print("| Faltas absolutas:  {}  |  Porcentagem: {}% |".format(faltasGeral, faltasGeralPorcentagem))
     
     print("\n")
 
