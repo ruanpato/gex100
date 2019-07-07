@@ -43,4 +43,4 @@ class MainMemory:
         block = self.readBlock(label)
         
         for i in range(4):
-            block[i].writeInCell(novoBloco[i])
+            block[i].writeInCell(novoBloco[i].bits.to01())
