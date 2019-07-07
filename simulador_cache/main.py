@@ -8,23 +8,25 @@ mainMemory = MainMemory()
 
 memoryCache = MemoryCache()
 
-def readContentFromMemory(acertos, faltas):
+def readContentFromMemory():
     memoryAdress = input("Digite o endereço de memória em hexa. Ex: 0x12: ")
     memoryAdress = verificaEndereco(memoryAdress, 0)
     adressInteger = int(memoryAdress, 16)
     adressBits = bin(adressInteger)[2:]
     arrayBits = bitarray(adressBits)
     arrayAsString = arrayBits.to01()
+    acertos = 0
+    faltas = 0
     
     # Verificar se esta na cache
     bloco = memoryCache.isHere(arrayBits)
 
     if bloco == None:
         bloco = memoryCache.leBlocoMemoria(arrayBits, mainMemory)
-        faltas += 1
+        faltas = 1
         print("Valor não encontrado na memória cache!")
     else:
-        acertos += 1
+        acertos = 1
         print("Valor encontrado na memória cache!")        
     
     
@@ -44,12 +46,19 @@ def readContentFromMemory(acertos, faltas):
     print("O Deslocamento é:", deslocamento)
     print("Dados: ", end = "")
     bloco.line[deslocamento].printCell()
+    
+    return {
+        "acertos": acertos,
+        "faltas": faltas
+    }
 
-def writeContentInMemory(acertos, faltas):
+def writeContentInMemory():
     memoryAdress = input("Digite o endereço de memória em hexa. Ex: 0x12: ")
     memoryAdress = verificaEndereco(memoryAdress, 0)
     dados = input("Digite os dados que serão armazenados: ")
     bitsDados = verificaEntrada(dados, 0)
+    acertos = 0
+    faltas = 0
     
     adressInteger = int(memoryAdress, 16)
     adressBits = bin(adressInteger)[2:]
@@ -67,6 +76,11 @@ def writeContentInMemory(acertos, faltas):
     
     # Escrever os dados na cache
     memoryCache.writeData(arrayBits, bitsDados)
+    
+    return {
+        "acertos": acertos, 
+        "faltas": faltas
+        }
 
 def findTwoscomplement(valor): 
     n = len(valor) 
@@ -152,8 +166,52 @@ def verificaEntrada(entrada, flag):
             return saida
             # converter string
 
-def statistics():
+def statistics(numeroEscrita, numeroLeitura, acertosEscrita, acertosLeitura, faltasEscrita, faltasLeitura):
+    acertosGeralPorcentagem = 0
+    faltasGeralPorcentagem = 0
+    porcentagemEscritaAcertos = 0
+    porcentagemEscritaFaltas = 0
+    porcentagemLeituraAcertos = 0
+    porcentagemLeituraFaltas = 0
     
+    if(numeroEscrita != 0):
+        porcentagemEscritaAcertos = (acertosEscrita/numeroEscrita) * 100
+        porcentagemEscritaFaltas = (faltasEscrita/numeroEscrita) * 100
+
+    if(numeroLeitura != 0):
+        porcentagemLeituraAcertos = (acertosLeitura/numeroLeitura) * 100
+        porcentagemLeituraFaltas = (faltasLeitura/numeroLeitura) * 100
+    
+    acertosGeral = acertosEscrita + acertosLeitura
+    
+    if(acertosGeral != 0):
+        acertosGeralPorcentagem = (acertosEscrita + acertosLeitura)/(numeroEscrita + numeroLeitura) * 100
+        faltasGeralPorcentagem = (faltasEscrita + faltasLeitura)/(numeroEscrita + numeroLeitura) * 100    
+
+    faltasGeral = faltasEscrita + faltasLeitura
+    
+    clearConsole()
+    
+    print("---ESCRITA---")
+    
+    print("Quantidade de Escrita: {}".format(numeroEscrita))
+    print("Acertos absolutos: {}   Porcentagem: {}".format(acertosEscrita, porcentagemEscritaAcertos))
+    print("Faltas absolutas:  {}   Porcentagem: {}".format(faltasEscrita, porcentagemEscritaFaltas))
+    
+    print("\n---LEITURA---")    
+    
+    print("Quantidade de Leitura: {}".format(numeroLeitura))
+    print("Acertos absolutos: {}   Porcentagem: {}".format(acertosLeitura, porcentagemLeituraAcertos))
+    print("Faltas absolutas:  {}   Porcentagem: {}".format(faltasLeitura, porcentagemLeituraFaltas))
+    
+    print("\n---GERAL---")        
+    
+    print("Quantidade Geral: {}".format(numeroLeitura))
+    print("Acertos absolutos: {}   Porcentagem: {}".format(acertosGeral, acertosGeralPorcentagem))
+    print("Faltas absolutas:  {}   Porcentagem: {}".format(faltasGeral, faltasGeralPorcentagem))
+    
+    print("\n")
+
     pass
 
 # Main
@@ -187,15 +245,20 @@ while True:
         continue
 
     if option == 1:
-        readContentFromMemory(acertosLeitura, faltasLeitura)
+        aux = readContentFromMemory()
+        acertosLeitura += aux['acertos']
+        faltasLeitura += aux['faltas']
         numeroLeitura += 1
         
     elif option == 2:
-        writeContentInMemory(acertosEscrita, faltasEscrita)
+        aux = writeContentInMemory()
+        acertosEscrita += aux['acertos']
+        faltasEscrita += aux['faltas']
+        
         numeroEscrita += 1
         
     elif option == 3:
-        statistics()
+        statistics(numeroEscrita, numeroLeitura, acertosEscrita, acertosLeitura, faltasEscrita, faltasLeitura)
     elif option == 4:
         mainMemory.printAllCells()
         
