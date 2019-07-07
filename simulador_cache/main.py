@@ -166,6 +166,27 @@ def verificaEntrada(entrada, flag):
             return saida
             # converter string
 
+def maiorLength(valor0, valor1):
+    try:
+        a = len(str(valor0))
+        b = len(str(valor1))
+        return a if a > b else b 
+    except:
+        return 0
+
+def padronaizaPorcentagem(porcentagem):
+    dec = ""
+    #try:
+    aux = str(round(porcentagem, 2)).split(".")
+    try:
+        for _ in range(0, len(aux[1])):
+            dec += "0"
+        porcentagem = str(aux[0]+"."+aux[1]+dec+"%")
+        return porcentagem
+    except:
+        porcentagem = (aux[0]+".00%")
+        return porcentagem
+
 def statistics(numeroEscrita, numeroLeitura, acertosEscrita, acertosLeitura, faltasEscrita, faltasLeitura):
     acertosGeralPorcentagem = 0
     faltasGeralPorcentagem = 0
@@ -173,14 +194,17 @@ def statistics(numeroEscrita, numeroLeitura, acertosEscrita, acertosLeitura, fal
     porcentagemEscritaFaltas = 0
     porcentagemLeituraAcertos = 0
     porcentagemLeituraFaltas = 0
-    
+    numeroGeral = 0
+
     if(numeroEscrita != 0):
         porcentagemEscritaAcertos = (acertosEscrita/numeroEscrita) * 100
         porcentagemEscritaFaltas = (faltasEscrita/numeroEscrita) * 100
+        numeroGeral += numeroEscrita
 
     if(numeroLeitura != 0):
         porcentagemLeituraAcertos = (acertosLeitura/numeroLeitura) * 100
         porcentagemLeituraFaltas = (faltasLeitura/numeroLeitura) * 100
+        numeroGeral += numeroLeitura
     
     acertosGeral = acertosEscrita + acertosLeitura
     
@@ -192,22 +216,36 @@ def statistics(numeroEscrita, numeroLeitura, acertosEscrita, acertosLeitura, fal
     
     clearConsole()
     
-    print("-------------------ESCRITA---------------------")
-    print("|            Quantidade de Escrita: {}          |".format(numeroEscrita))
-    print("| Acertos absolutos:     {}  |  Porcentagem: {}% |".format(acertosEscrita, porcentagemEscritaAcertos))
-    print("| Faltas absolutas:      {}  |  Porcentagem: {}% |".format(faltasEscrita, porcentagemEscritaFaltas))
+    print("\n{:-^63s}".format("ESCRITA"))
+    exibe0 = "Quantidade de Escrita: "+str(numeroEscrita)
+    print("|{: ^61s}|".format(exibe0))
+    exibe0 = "Acertos absolutos: "+str(acertosEscrita)
+    exibe1 = "Porcentagem: "+padronaizaPorcentagem(porcentagemEscritaAcertos)
+    print("|{: ^30s}|{: ^30s}|".format(exibe0, exibe1))
+    exibe0 = "Faltas absolutas: "+str(faltasEscrita)
+    exibe1 = "Porcentagem: "+padronaizaPorcentagem(porcentagemEscritaFaltas)
+    print("|{: ^30s}|{: ^30s}|".format(exibe0, exibe1))
     
-    print("\n--------------------LEITURA--------------------")    
+    print("\n{:-^63s}".format("LEITURA"))    
+    exibe0 = "Quantidade de Leitura: "+str(numeroLeitura)
+    print("|{: ^61s}|".format(exibe0))
+    exibe0 = "Acertos absolutos: "+str(acertosLeitura)
+    exibe1 = "Porcentagem: "+padronaizaPorcentagem(porcentagemLeituraAcertos)
+    print("|{: ^30s}|{: ^30s}|".format(exibe0, exibe1))
+    exibe0 = "Faltas absolutas: "+str(faltasLeitura)
+    exibe1 = "Porcentagem: "+padronaizaPorcentagem(porcentagemLeituraFaltas)
+    print("|{: ^30s}|{: ^30s}|".format(exibe0, exibe1))
     
-    print("|           Quantidade de Leitura: {}           |".format(numeroLeitura))
-    print("| Acertos absolutos:     {}  |  Porcentagem: {}% |".format(acertosLeitura, porcentagemLeituraAcertos))
-    print("| Faltas absolutas:      {}  |  Porcentagem: {}% |".format(faltasLeitura, porcentagemLeituraFaltas))
-    
-    print("\n-------------------GERAL-------------------")        
-    
-    print("|            Quantidade Geral:  {}          |".format(numeroLeitura))
-    print("| Acertos absolutos: {}  |  Porcentagem: {}% |".format(acertosGeral, acertosGeralPorcentagem))
-    print("| Faltas absolutas:  {}  |  Porcentagem: {}% |".format(faltasGeral, faltasGeralPorcentagem))
+    print("\n{:-^63s}".format("GERAL"))        
+    exibe0 = "Quantidade Geral: "+str(numeroGeral) # REVER ISSO
+    print("|{: ^61s}|".format(exibe0))
+    #maiorLen = maiorLength(acertosGeral, acertosGeralPorcentagem)
+    exibe0 = "Acertos absolutos: "+str(acertosGeral)
+    exibe1 = "Porcentagem: "+padronaizaPorcentagem(acertosGeralPorcentagem)
+    print("|{: ^30s}|{: ^30s}|".format(exibe0, exibe1))
+    exibe0 = "Faltas absolutas: "+str(faltasGeral)
+    exibe1 = "Porcentagem: "+padronaizaPorcentagem(faltasGeralPorcentagem)
+    print("|{: ^30s}|{: ^30s}|".format(exibe0, exibe1))
     
     print("\n")
 
