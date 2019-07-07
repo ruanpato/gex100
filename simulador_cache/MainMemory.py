@@ -10,7 +10,8 @@ class MainMemory:
             self.cells.append(newCell)
             
     def printAllCells(self):
-        for cell in self.cells:
+        for (i, cell) in enumerate(self.cells):
+            print("{} - {}:    ".format(i, hex(i)) , end="")
             cell.printCell()
 
     def readBlock(self, numBlock):
