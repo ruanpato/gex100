@@ -184,7 +184,9 @@ def statistics(numeroEscrita, numeroLeitura, acertosEscrita, acertosLeitura, fal
     
     acertosGeral = acertosEscrita + acertosLeitura
     
-    if(acertosGeral != 0):
+    if((numeroEscrita + numeroLeitura) != 0):
+        print("OLA")
+        print("Acertos gerais ", acertosGeral)
         acertosGeralPorcentagem = (acertosEscrita + acertosLeitura)/(numeroEscrita + numeroLeitura) * 100
         faltasGeralPorcentagem = (faltasEscrita + faltasLeitura)/(numeroEscrita + numeroLeitura) * 100    
 
