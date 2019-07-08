@@ -4,7 +4,7 @@ Repositório criado para armazenar meus exercícios e trabalho referentes ao com
 
 ## Trabalhos e exercícios ##
 
-* [Campo minado](https://github.com/ruanpato/gex100/tree/master/campo_minado)
+* [Campo minado mips](https://github.com/ruanpato/gex100/tree/master/campo_minado)
 * [Simulador cache](https://github.com/ruanpato/gex100/tree/master/simulador_cache)
 
 ### Built With ###
