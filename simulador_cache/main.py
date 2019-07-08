@@ -299,7 +299,7 @@ while True:
     elif option == 3:
         statistics(numeroEscrita, numeroLeitura, acertosEscrita, acertosLeitura, faltasEscrita, faltasLeitura)
     elif option == 4:
-        mainMemory.printAllCells()
+        mainMemory.printAllCellsMain()
         
     elif option == 5:
         #print all from cache

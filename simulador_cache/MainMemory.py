@@ -14,6 +14,27 @@ class MainMemory:
             print("{} - {}:    ".format(i, hex(i)) , end="")
             cell.printCell()
 
+    def printAllCellsMain(self):
+        print("|{: ^23s}|{: ^10s}|\n|{: ^9s}|{: ^13s}|{: ^10s}|".format("Posição", "", "Decimal", "Hexadecimal", "Valor"))
+        for (i, cell) in enumerate(self.cells):
+            print("|{: ^9s}|{: ^13s}|{: ^10s}|".format( self.padronizaEnderecoDec(i), self.padronizaEnderecoHexa(i), cell.getCell()))
+
+    def padronizaEnderecoDec(self, endereco):
+        if endereco >= 100:
+            return str(endereco)
+        elif endereco >= 10:
+            return ("0"+str(endereco))
+        return ("00"+str(endereco))
+
+    def padronizaEnderecoHexa(self, endereco):
+        if endereco < 16:
+            try:
+                aux = str(hex(endereco)).split("x")
+                return str(aux[0]+"x0"+aux[1])
+            except:
+                return str(hex(endereco))
+        return str(hex(endereco))
+
 
     def readBlock(self, numBlock):
         startBlock = numBlock * 4

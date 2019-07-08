@@ -206,10 +206,11 @@ class MemoryCache:
     
     def printAllCellsCache(self):
         for i in range(4):
-            print("\n-------------Conjunto {}--------------\n".format(i + 1))
-            print("|     Quadro A    |     Quadro B    |\n|     Linha ", i, "   |     Linha ", i+4, "   |")
-            for j in range(4):        
-                print("| Célula {}".format(self.line[i].line[j].getCell()), "| Célula {} |".format(self.line[i+4].line[j].getCell()))
+            print("\n{:-^35s}\n".format(("Conjunto "+str(i))) )
+            print("|           | Quadro A |{: ^10s}|\n|           |{: ^10s}|{: ^10s}|".format("Quadro B", ("Linha "+str(i)), ("Linha "+str(i+4))) )
+            for j in range(4):
+                celula = "Célula: "+str(j)
+                print("| {} | {}".format(celula, self.line[i].line[j].getCell()), "| {} |".format(self.line[i+4].line[j].getCell()))
         print('\n\n')
 
     def printAllCells(self):
