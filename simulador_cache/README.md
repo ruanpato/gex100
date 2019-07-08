@@ -5,9 +5,9 @@ Diretório criado para armazenar informações sobre Assembly MIPS.
 ## Sumário ##
 **[01.](#01-Instru%C3%A7%C3%B5es-para-implementa%C3%A7%C3%A3o) Instruções para implementação.**  
 **[02.](#02-Pol%C3%ADticas) Políticas**  
-**[03.](#03-Padr%C3%B5es-de-codifica%C3%A7%C3%A3o) Padrões de codificação**
-**[04.](#04-Instru%C3%A7%C3%B5es-de-uso) Instruções de uso**
-**[05.]() Observações**
+**[03.](#03-Padr%C3%B5es-de-codifica%C3%A7%C3%A3o) Padrões de codificação**  
+**[04.](#04-Instru%C3%A7%C3%B5es-de-uso) Instruções de uso**  
+**[05.](#05-Observa%C3%A7%C3%B5es) Observações**  
 
 ## 01. Instruções para implementação ##
 Especificações:  
