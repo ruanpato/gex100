@@ -486,6 +486,7 @@ calcula_bombas:
     addi    $s5, $zero, 0                       # Contador de bombas
     la      $s7, matriz_sistema                 # Endereço
     li      $t9, '9'                            # Valor a ser comparado
+    li      $s6, '0'                                            # Valor a ser inserido
     j       loop_calcula_bombas_linhas          # Pula para o loop calcula bombas linhas
 
     loop_calcula_bombas_linhas:
@@ -499,7 +500,6 @@ calcula_bombas:
 
             add     $t4, $t3, $t1                                       # (i*n)+j
             sll     $t4, $t4, 2                                         # ((i*n)+j)*4
-            li      $s6, '0'                                            # Valor a ser inserido
             add     $s3, $s7, $t4                                       # Endereço + Deslocamento
             lw      $a0, 0($s3)                                         # Carrega o valor em $a0
 
@@ -556,7 +556,7 @@ calcula_bombas:
             addi    $sp, $sp, -4                                        # Incrementa Stack Pointer
 
             sw      $s6, 0($s3)                                         # Store new value
-
+            li      $s6, '0'
             j       incrementa_loop_calcula_bombas_colunas
 
     # if(i-1 >= 0)
@@ -575,17 +575,19 @@ calcula_bombas:
         bne     $t7, $zero, verifica_nove           # Se i+1 < n
         jr      $ra                                 # Return;
 
-    # if(i >= 0 && j-1 >= 0)
+    # if(j-1 >= 0)
     verifica_esquerda:
         addi    $t5, $t0, 0                         # i
         addi    $t6, $t1, -1                        # j-1
-        slt     $t7, $t5, $zero                     # i < 0 ? 1 : 0
-        beq     $t7, $zero, verifica_esquerda_1     # Se i >= 0
+        slt     $t7, $t6, $zero                     # j-1 < 0 ? 1 : 0
+        beq     $t7, $zero, verifica_nove           # Se i-1 >= 0
+        #slt     $t7, $t5, $zero                     # i < 0 ? 1 : 0
+        #beq     $t7, $zero, verifica_esquerda_1     # Se i >= 0
         jr      $ra                                 # Return;
-        verifica_esquerda_1:
-            slt     $t7, $t6, $zero                 # j-1 < 0 ? 1 : 0
-            beq     $t7, $zero, verifica_nove       # Se i-1 >= 0
-            jr      $ra                             # Return;
+        #verifica_esquerda_1:
+        #    slt     $t7, $t6, $zero                 # j-1 < 0 ? 1 : 0
+        #    beq     $t7, $zero, verifica_nove       # Se i-1 >= 0
+        #    jr      $ra                             # Return;
 
     # if(i < n && j+1 < n)
     verifica_direita:
@@ -600,55 +602,57 @@ calcula_bombas:
             jr      $ra                             # Return;
     
     # if(i-1 >= 0 && j-1 >= 0)
-    verifica_diagonal_inferior_esquerda:
+    verifica_diagonal_superior_esquerda:
         addi    $t5, $t0, -1                    # i-1
         addi    $t6, $t1, -1                    # j-1
         slt     $t7, $t5, $zero                 # i-1 < 0 ? 1 : 0
-        beq     $t7, $zero, verifica_diagonal_inferior_esquerda_1   # Se i-1 >= 0
-        jr      $ra                             # Return;
-        verifica_diagonal_inferior_esquerda_1:
-            slt     $t7, $t6, $zero             # j-1 < 0 ? 1 : 0
-            beq     $t7, $zero, verifica_nove   # Se j-1 >= 0
-            jr      $ra                         # Return;
-    
-    # if(i+1 < n && j-1 >= 0)
-    verifica_diagonal_superior_esquerda:
-        addi    $t5, $t0, 1                     # i+1
-        addi    $t6, $t1, -1                    # j-1
-        slt     $t7, $t5, $s0                   # i+1 < n ? 1 : 0
-        bne     $t7, $zero, verifica_diagonal_superior_esquerda_1   # Se i+1 < n
+        beq     $t7, $zero, verifica_diagonal_superior_esquerda_1   # Se i-1 >= 0
         jr      $ra                             # Return;
         verifica_diagonal_superior_esquerda_1:
             slt     $t7, $t6, $zero             # j-1 < 0 ? 1 : 0
             beq     $t7, $zero, verifica_nove   # Se j-1 >= 0
             jr      $ra                         # Return;
+    
+    # if(i+1 < n && j-1 >= 0)
+    verifica_diagonal_inferior_esquerda:
+        addi    $t5, $t0, 1                     # i+1
+        addi    $t6, $t1, -1                    # j-1
+        slt     $t7, $t5, $s0                   # i+1 < n ? 1 : 0
+        bne     $t7, $zero, verifica_diagonal_inferior_esquerda_1   # Se i+1 < n
+        jr      $ra                             # Return;
+        verifica_diagonal_inferior_esquerda_1:
+            slt     $t7, $t6, $zero             # j-1 < 0 ? 1 : 0
+            beq     $t7, $zero, verifica_nove   # Se j-1 >= 0
+            jr      $ra                         # Return;
 
     # if(i-1 >= 0 && j+1 < n)
-    verifica_diagonal_inferior_direita:
+    verifica_diagonal_superior_direita:
         addi    $t5, $t0, -1                    # i-1
         addi    $t6, $t1, 1                     # j+1
         slt     $t7, $t5, $zero                 # i-1 < 0 ? 1 : 0
-        beq     $t7, $zero, verifica_diagonal_inferior_direita_1   # Se i-1 >= 0
-        jr      $ra                             # Return;
-        verifica_diagonal_inferior_direita_1:
-            slt     $t7, $t6, $s0               # j+1 < n ? 1 : 0
-            beq     $t7, $zero, verifica_nove   # Se j+1 < n
-            jr      $ra                         # Return;
-
-    # if(i+1 < n && j+1 < n)
-    verifica_diagonal_superior_direita:
-        addi    $t5, $t0, 1                     # i+1
-        addi    $t6, $t1, 1                     # j+1
-        slt     $t7, $t5, $zero                 # i+1 < n ? 1 : 0
-        bne     $t7, $zero, verifica_diagonal_superior_direita_1   # Se j+1 < n
+        beq     $t7, $zero, verifica_diagonal_superior_direita_1   # Se i-1 >= 0
         jr      $ra                             # Return;
         verifica_diagonal_superior_direita_1:
             slt     $t7, $t6, $s0               # j+1 < n ? 1 : 0
             bne     $t7, $zero, verifica_nove   # Se j+1 < n
             jr      $ra                         # Return;
 
+    # if(i+1 < n && j+1 < n)
+    verifica_diagonal_inferior_direita:
+        addi    $t5, $t0, 1                     # i+1
+        addi    $t6, $t1, 1                     # j+1
+        slt     $t7, $t5, $zero                 # i+1 < n ? 1 : 0
+        bne     $t7, $zero, verifica_diagonal_inferior_direita_1   # Se j+1 < n
+        jr      $ra                             # Return;
+        verifica_diagonal_inferior_direita_1:
+            slt     $t7, $t6, $s0               # j+1 < n ? 1 : 0
+            bne     $t7, $zero, verifica_nove   # Se j+1 < n
+            jr      $ra                         # Return;
+
     verifica_nove:
-        add     $t7, $t5, $t6                   # i*n+j
+        mult    $t5, $s0                        # i*n
+        mflo    $t7                             # t7 = i*n
+        add     $t7, $t7, $t6                   # i*n+j
         sll     $t7, $t7, 2                     # (i*n+j)*4
         add     $t7, $s7, $t7                   # Endereço+Deslocamento
         lw      $t8, 0($t7)                     # t8 verifica se possui um 9 na posição
