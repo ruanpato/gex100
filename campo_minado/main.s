@@ -230,19 +230,6 @@ menu_jogo:
     la          $s6, matriz_usuario                                         # 
     la          $s7, matriz_sistema                                         # 
     
-    add         $a0, $s3, $zero
-    li          $v0, 1
-    syscall
-    li          $a0, '-'
-    li          $v0, 11
-    syscall
-    add         $a0, $s4, $zero
-    li          $v0, 1
-    syscall
-    li          $a0, '\n'
-    li          $v0, 11
-    syscall
-    
     addi        $sp, $sp, 4                                                 # Incrementa o stack pointer
     sw          $ra, 0($sp)                                                 # Salva o endereço de retorno no stack pointer
     jal         loop_menu                                                   # Chama o loop_menu e linka a esta linha
@@ -301,34 +288,13 @@ menu_jogo:
         add     $t2, $s6, $t0                                               # Endereço + deslocamento (usuario)
         lw      $t4, 0($t2)                                                 # Load Word (usuario)
 
-       # lw      $a0, 0($t1)
-       # li      $v0, 11
-       # syscall
-       #lw      $a0, 0($t2)
-        #li      $v0, 11
-        #syscall
-
-        add         $a0, $s3, $zero
-        li          $v0, 1
-        syscall
-        li          $a0, '-'
-        li          $v0, 11
-        syscall
-        add         $a0, $s4, $zero
-        li          $v0, 1
-        syscall
-        li          $a0, '\n'
-        li          $v0, 11
-        syscall
-
         beq     $t3, $t9, bomba_encerra_jogo                                # Bomba
         beq     $t3, $t4, opcao_nao_valida                                  # Posição já jogada
-        add     $t8, $s3, $s5                                               # Jogadas + bombas
-        #slt     $a0, $s3, $s4   
-        beq     $t8, $s1, fim_vitoria                                       # 
+        
+        addi    $s3, $s3, 1                                                 # Incrementa jogadas válidas
         
         sw      $t3, 0($t2)                                                 # Coloca o valor no tabuleiro (usuario)
-        addi    $s3, $s3, 1                                                 # Incrementa jogadas válidas
+        beq     $s3, $s4, fim_vitoria                                       # Se todas as jogadas válidas possíveis foram feitas
         jr      $ra                                                         # Volta pro loop
 
         bomba_encerra_jogo:
@@ -365,9 +331,11 @@ menu_jogo:
             li      $v0, 4                                                  # Chamada string
             syscall
             j       loop_menu                                               # Volta pro loop
+
         fim_vitoria:
             la      $a0, msg_vitoria                                        # 
             li      $v0, 4                                                  # Chama string
+            syscall
             j       exit
 
 print_matriz_usuario:
