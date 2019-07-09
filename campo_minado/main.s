@@ -1,18 +1,21 @@
 # Cabeçalho de registradores salvos usados:
 # $s0 = n
 # $s1 = n*n
-# $s6 = matriz_jogo
+# $s5 = número de posições sem bomba
+# $s6 = matriz_sistema
 # $s7 = matriz_usuario
 .data
     # Mensagens
-    byte_interrogacao:      .byte '?'
+    msg_barra_5:            .asciiz "\n  |---------|"
+    msg_barra_7:            .asciiz "\n  |-------------|"
+    msg_barra_9:            .asciiz "\n  |-----------------|"
     msg_test:               .asciiz "\n----TESTE----\n"
     msg_test_fim_main:      .asciiz "\n----FIM_MAIN----\n"
     msg_seleciona_opc:      .asciiz "\nDigite qual o tamanho que deseja que a matriz tenha\na) 5x5\nb) 7x7\nc) 9x9\n-> "
     msg_jogar_novamente:    .asciiz "\nPara Jogar novamente digite 1 ou para encerrar a execução digite 0\n-> "
     # Vetores(Matrizes)
-    matriz_usuario:         .word 82                # Matriz que o usuário verá
-    matriz_sistema:         .word                 # Matriz respectiva ao funcionamento do jogo
+    matriz_usuario:         .word '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?'              # Matriz que o usuário verá
+    matriz_sistema:         .word '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'              # Matriz respectiva ao funcionamento do jogo
 .text
 jal		main				                        # jump to main and save position to $ra
 
@@ -25,18 +28,15 @@ main:
         li		$v0, 12                                 # $v0 = 12 Argumento para ler um caracter
         syscall
         add     $s0, $v0, $zero                         # Salva a entrada em $s0
-    
-        jal     opcao_para_n                            # Vai para a 'função' e linka o retorno a esta linha
-        jal     preenche_matriz_usuario                 # Preenche a matriz que o usuário vê com ?
-        jal     imprime_matriz_usuario                  # Vai para a 'função' e linka o retorno a esta linha
         
-        jal     insere_bombas                           # Insere a bomba
-        la      $a0, matriz_sistema
-        li      $v0, 4
-        syscall
-        jal     imprime_matriz_sistema
+        jal     opcao_para_n                            # Vai para a 'função' e linka o retorno a esta linha
 
-        j       seleciona_jogar_novamente               # Verifica se o usuário deseja jogar novamente    
+        jal     insere_bombas                           # Insere a bomba
+        jal     calcula_bombas                          # 
+        jal     print_matriz_usuario
+        jal     print_matriz_sistema
+        
+        #j       seleciona_jogar_novamente               # Verifica se o usuário deseja jogar novamente    
         la		$a0, msg_test_fim_main		            # Carrega o endereço do array .asciiz referente a mensagem de selecionar a opção
         li		$v0, 4                                  # $v0 = 4 Argumento para imprimir array(string) via syscall(MARS)
         syscall                                         # Imprime a mensagem da seleção da opção
@@ -63,176 +63,19 @@ opcao_para_n:                                       # Pega a opção que será u
 
     opc_a:
         addi    $s0, $zero, 5                       # $s0 = 5
-        addi    $s1, $zero, 26                      # $s1 = n*n+1
+        addi    $s1, $zero, 25                      # $s1 = n*n+1
         jr      $ra
 
     opc_b:
         addi    $s0, $zero, 7                       # $s0 = 7
-        addi    $s1, $zero, 50                      # $s1 = n*n+1
+        addi    $s1, $zero, 49                      # $s1 = n*n
         jr      $ra
     opc_c:
         addi    $s0, $zero, 9                       # $s0 = 9
-        addi    $s1, $zero, 82                      # $s1 = n*n+1
-        jr      $ra
-
-preenche_matriz_usuario:
-    add     $t1, $zero, $zero                       # Inicializa Variável de controle
-    add     $t2, $zero, $zero                       # Inicializa iterador
-    addi    $t3, $s1, -1                            # n*n-1
-    li      $s5, '?'                                # Carrega um caractere em $s5 (lw = LoadByte)
-
-    j		enquanto_nao_estiver_preenchida		    # jump to enquanto_nao_estiver_preenchida
-
-    enquanto_nao_estiver_preenchida:
-        beq     $t1, $t3, fim_preenche_matriz_usuario    # Vai para fim_preenche_matriz_usuario
-
-        sw	    $s5, matriz_usuario($t2)		                         # Coloca o caractere ? na posição i da matriz StoreByte
-        addi    $t1, $t1, 1                              # Incrementa a variável de controle
-        addi    $t2, $t2, 4                              # Muda a posição do vetor
-        
-        j       enquanto_nao_estiver_preenchida     # Volta para o loop
-
-    fim_preenche_matriz_usuario:
+        addi    $s1, $zero, 81                      # $s1 = n*n
         jr      $ra                                 # Retorna para onde foi chamada
 
-imprime_matriz_usuario:
-    # Imprime quebra de linha
-    li     $a0, '\n'                                    # Carrega o caractere quebra de linha em $a0
-    li     $v0, 11                                     # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-    syscall
-    # Imprime 3 espaços:
-    li     $a0, ' '                                    # Carrega o caractere espaço em $a0
-    li     $v0, 11                                     # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-    syscall
-    syscall
-    syscall
 
-    add     $t0, $zero, $zero                       # Variável de controle
-
-    addi    $sp, $sp, 4                             # Incrementa o stackpointer
-    sw      $ra, 0($sp)                             # Salva o endereço de retorno em $sp
-    jal     loop_imprime_indices_colunas
-    lw      $ra, 0($sp)                             # Carrega o endereço de retorno em $ra
-    addi    $sp, $sp, -4                            # Decrementa o stackpointer
-    addi    $sp, $sp, 4                             # Incrementa o stackpointer
-    sw      $ra, 0($sp)                             # Salva o endereço de retorno em $sp
-    addi    $t5, $zero, 1                           # Iterador de loop_chama_imprime_linhas
-    addi    $t6, $s0, 1                             # $t6 = n+1
-    addi    $s3, $zero, 0                           # Iterator to print all table
-    jal     loop_chama_imprime_linhas
-    lw      $ra, 0($sp)                             # Carrega o endereço de retorno em $ra
-    addi    $sp, $sp, -4                            # Decrementa o stackpointer
-    addi    $sp, $sp, 4                             # Incrementa o stackpointer
-    sw      $ra, 0($sp)                             # Salva o endereço de retorno em $sp
-    jal     loop_imprime_linha_separador
-    lw      $ra, 0($sp)                             # Carrega o endereço de retorno em $ra
-    addi    $sp, $sp, -4                            # Decrementa o stackpointer
-    jr      $ra
-    
-    loop_imprime_indices_colunas:
-        # Compara
-        slt     $t1, $t0, $s0                              # Se i < n+1 então $t2 = 1
-        beq     $t1, $zero, fim_imprime_indices_colunas    # Vai para fim_imprime_indices_colunas
-        # Imprime o indice_coluna
-        addi    $a0, $t0, 1                                # $a0 = indice_coluna
-        li      $v0, 1                                     # $v0 = 1 Argumento para imprimir inteiro via syscall(MARS)
-        syscall
-        # Imprime espaço
-        li     $a0, ' '                                    # Carrega o caractere espaço em $a0
-        li     $v0, 11                                     # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-        syscall
-
-        addi    $t0, $t0, 1                                # Incrementa variável de controle
-        
-        j loop_imprime_indices_colunas
-
-        fim_imprime_indices_colunas:
-            li     $a0, '\n'                                    # Carrega o caractere quebra de linha em $a0
-            li     $v0, 11                                      # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-            syscall
-            jr  $ra                                             # Retorna para onde foi chamado loop_imprime_indices_colunas
-    
-    loop_chama_imprime_linhas: beq      $t5, $t6, fim_loop_chama_imprime_linhas 
-            # Compara se i < n (Quantidade de elementos por linha)
-            addi    $sp, $sp, 4                                         # Incementa o stackpointer
-            sw      $ra, 0($sp)                                         # Salva o endereço de retorno em $sp
-            jal     loop_imprime_linha_separador
-            lw      $ra, 0($sp)                                         # Carrega o endereço de retorno em $ra
-            addi    $sp, $sp, -4                                        # Decrementa o stackpointer
-            addi    $a0, $t0, 1                                         # $a0 = indice_coluna
-            
-            # Imprime a linha e os caracteres
-            add     $a0, $zero, $t5                                        # Contador do loop
-            li      $v0, 1                                          # $v0 = 1 Argumento para imprimir inteiro via syscall(MARS)
-            syscall
-            li      $a0, ' '                                        # Carrega o caractere espaço em $a0
-            li      $v0, 11                                         # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-            syscall
-            addi    $t2, $zero, 0                                       # $t2 recebe matriz do usuário
-            addi    $t0, $zero, 0                                       # i = 0
-            #addi    $t1, $s0, -1                                        # $t1 = n-1
-            addi    $sp, $sp, 4                                         # Incementa o stackpointer
-            sw      $ra, 0($sp)                                         # Salva o endereço de retorno em $sp
-            jal     loop_imprime_linha
-            lw      $ra, 0($sp)                                         # Carrega o endereço de retorno em $ra
-            addi    $sp, $sp, -4                                        # Decrementa o stackpointer
-            addi    $a0, $t0, 1                                         # $a0 = indice_coluna
-
-            addi    $t5, $t5, 1
-            j loop_chama_imprime_linhas
-        fim_loop_chama_imprime_linhas:
-            jr $ra
-
-        loop_imprime_linha_separador:
-            # Imprime espaço
-            li     $a0, ' '                                    # Carrega o caractere espaço em $a0
-            li     $v0, 11                                     # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-            syscall
-            syscall
-            li      $a0, '|'                                        # Carrega o caractere quebra de linha em $a0
-            li      $v0, 11                                         # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-            syscall
-            addi    $t0, $zero, 1                                   # i = 1
-            # Quantidade de caractere - == n+n
-            add     $t1, $s0, $s0                                   # n+n
-            j       loop_separador
-            loop_separador: beq     $t0, $t1, fim_loop_imprime_linha_separador      
-                li      $a0, '-'                                            # Carrega o caractere - em $a0
-                li      $v0, 11                                             # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-                syscall
-
-                addi    $t0, $t0, 1                                         # incrementa em um o contador
-                j       loop_separador
-
-            fim_loop_imprime_linha_separador:
-                li      $a0, '|'                                        # Carrega o caractere quebra de linha em $a0
-                li      $v0, 11                                         # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-                syscall
-                li      $a0, '\n'                                           # Carrega o caractere quebra de linha em $a0
-                li      $v0, 11                                             # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-                syscall
-                jr      $ra
-
-        loop_imprime_linha: beq     $t0, $s0, fim_loop_imprime_linha
-            li      $a0, '|'                                        # Carrega o caractere | em $a0
-            li      $v0, 11                                         # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-            syscall
-            lw      $a0, matriz_usuario($s3)                        # $teste2 recebe o caractere a ser impresso
-            li      $v0, 11                                         # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-            syscall
-
-            addi    $s3, $s3, 4                                     # Incrementa posição no vetor
-            addi    $t0, $t0, 1                                     # Incrementa contador
-            j loop_imprime_linha
-
-            fim_loop_imprime_linha:
-                li      $a0, '|'                                            # Carrega o caractere | em $a0
-                li      $v0, 11                                             # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-                syscall
-                li      $a0, '\n'                                           # Carrega o caractere quebra de linha em $a0
-                li      $v0, 11                                             # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-                syscall
-                jr      $ra
 
 seleciona_jogar_novamente:
     la      $a0, msg_jogar_novamente                                        # carrega o endereço da mensagem em a0
@@ -243,16 +86,81 @@ seleciona_jogar_novamente:
     beq     $v0, $zero, exit                                                # Se a opção for zero chama função que encerra a execução
     j       main                                                            # Se não for igual vai para main
 
-insere_bombas:
-    li      $t9, '9'                                                          # 9 é uma bomba
+insere_bombas_aux:
+    addi    $t0, $zero, 0                                                  # $t0 == i = 0
+    li      $t9, '9'                                                        # 9 é uma bomba
     addi    $t0, $zero, 0                                                   # $t0 == i = 0
-    addi    $t1, $zero, 5                                                   # compara se é 5
+    li      $t1, 5                                                          # compara se é 5
+    beq     $t1, $s0, matriz_5_aux                                              # Se for igual vai para função que insere na de 5
+    li      $t1, 7                                                          # compara se é 7
+    beq     $t1, $s0, matriz_7_aux                                              # Se for igual vai para função que insere na de 7
+    li      $t1, 9                                                          # compara se é 9
+    beq     $t1, $s0, matriz_9_aux                                              # Se for igual vai para função que insere na de 9
+
+    matriz_5_aux:
+        addi    $t0, $zero, 0                                                  # $t0 == i = 0
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 24                        # 4(word)*6(positions)
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 24                        # 4(word)*6(positions)
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 24                        # 4(word)*6(positions)
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 24                        # 4(word)*6(positions)
+        sw      $t9, matriz_usuario($t0)
+        j		fim_loop_insere_bombas_aux				# jump to 
+    matriz_7_aux:
+        addi    $t0, $zero, 0                                                  # $t0 == i = 0
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 32                        # 4(word)*8(positions)
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 32                        # 4(word)*8(positions)
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 32                        # 4(word)*8(positions)
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 32                        # 4(word)*8(positions)
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 32                        # 4(word)*8(positions)
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 32                        # 4(word)*8(positions)
+        sw      $t9, matriz_usuario($t0)
+        j		fim_loop_insere_bombas_aux				# jump to 
+    matriz_9_aux:
+        addi    $t0, $zero, 0                                                  # $t0 == i = 0
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 40                        # 4(word)*10(positions)
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 40                        # 4(word)*10(positions)
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 40                        # 4(word)*10(positions)
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 40                        # 4(word)*10(positions)
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 40                        # 4(word)*10(positions)
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 40                        # 4(word)*10(positions)
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 40                        # 4(word)*10(positions)
+        sw      $t9, matriz_usuario($t0)
+        addi    $t0, $t0, 40                        # 4(word)*10(positions)
+        sw      $t9, matriz_usuario($t0)
+        j		fim_loop_insere_bombas_aux				# jump to 
+    fim_loop_insere_bombas_aux:
+        jr $ra # Volta para $ra
+
+insere_bombas:
+    addi    $t0, $zero, 0                                                  # $t0 == i = 0
+    li      $t9, '9'                                                        # 9 é uma bomba
+    addi    $t0, $zero, 0                                                   # $t0 == i = 0
+    li      $t1, 5                                                          # compara se é 5
     beq     $t1, $s0, matriz_5                                              # Se for igual vai para função que insere na de 5
-    addi    $t1, $zero, 7                                                   # compara se é 7
+    li      $t1, 7                                                          # compara se é 7
     beq     $t1, $s0, matriz_7                                              # Se for igual vai para função que insere na de 7
-    addi    $t1, $zero, 9                                                   # compara se é 9
+    li      $t1, 9                                                          # compara se é 9
     beq     $t1, $s0, matriz_9                                              # Se for igual vai para função que insere na de 9
+
     matriz_5:
+        addi    $t0, $zero, 0                                                  # $t0 == i = 0
         sw      $t9, matriz_sistema($t0)
         addi    $t0, $t0, 24                        # 4(word)*6(positions)
         sw      $t9, matriz_sistema($t0)
@@ -264,6 +172,7 @@ insere_bombas:
         sw      $t9, matriz_sistema($t0)
         j		fim_loop_insere_bombas				# jump to 
     matriz_7:
+        addi    $t0, $zero, 0                                                  # $t0 == i = 0
         sw      $t9, matriz_sistema($t0)
         addi    $t0, $t0, 32                        # 4(word)*8(positions)
         sw      $t9, matriz_sistema($t0)
@@ -279,6 +188,7 @@ insere_bombas:
         sw      $t9, matriz_sistema($t0)
         j		fim_loop_insere_bombas				# jump to 
     matriz_9:
+        addi    $t0, $zero, 0                                                  # $t0 == i = 0
         sw      $t9, matriz_sistema($t0)
         addi    $t0, $t0, 40                        # 4(word)*10(positions)
         sw      $t9, matriz_sistema($t0)
@@ -298,7 +208,7 @@ insere_bombas:
         sw      $t9, matriz_sistema($t0)
         j		fim_loop_insere_bombas				# jump to 
     fim_loop_insere_bombas:
-        jr		$ra                                     					# Volta para $ra
+        jr $ra # Volta para $ra
 
 menu_jogo:
     addi        $t0, $zero, 0                                               # i = 0
@@ -310,202 +220,491 @@ menu_jogo:
     jr          $ra                                                         # volta ao $ra
     loop_menu:
 
-imprime_matriz_sistema:
+print_matriz_usuario:
     # Imprime quebra de linha
-    li     $a0, '\n'                                    # Carrega o caractere quebra de linha em $a0
-    li     $v0, 11                                     # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
+    li     $a0, '\n'                                        # Carrega o caractere quebra de linha em $a0
+    li     $v0, 11                                          # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
     syscall
-    # Imprime 3 espaços:
-    li     $a0, ' '                                    # Carrega o caractere espaço em $a0
-    li     $v0, 11                                     # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-    syscall
+    # Imprime 2 espaços para os indices:
+    li     $a0, ' '                                         # Carrega o caractere espaço em $a0
+    li     $v0, 11                                          # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
     syscall
     syscall
 
-    add     $t0, $zero, $zero                       # Variável de controle
-    addi    $s3, $zero, 4                           # $t2 indice da matriz do usuario
+    addi    $t0, $zero, 0                                   # Variável de controle (i)
+    addi    $t1, $zero, 0                                   # Variável de controle (j)
+    la      $s7, matriz_usuario                             # Endereço da matriz
+    addi    $t3, $zero, 0                                   # Shift logical left
+    addi    $t4, $zero, 0                                   # Endereço da matriz + shift left
 
-    addi    $sp, $sp, 4                             # Incrementa o stackpointer
-    sw      $ra, 0($sp)                             # Salva o endereço de retorno em $sp
-    jal     loop_imprime_indices_colunas_s
-    lw      $ra, 0($sp)                             # Carrega o endereço de retorno em $ra
-    addi    $sp, $sp, -4                            # Decrementa o stackpointer
-    addi    $sp, $sp, 4                             # Incrementa o stackpointer
-    sw      $ra, 0($sp)                             # Salva o endereço de retorno em $sp
-    addi    $t5, $zero, 1                           # Iterador de loop_chama_imprime_linhas_s
-    addi    $t6, $s0, 1                             # $t6 = n+1
-    jal     loop_chama_imprime_linhas_s
-    lw      $ra, 0($sp)                             # Carrega o endereço de retorno em $ra
-    addi    $sp, $sp, -4                            # Decrementa o stackpointer
-    addi    $sp, $sp, 4                             # Incrementa o stackpointer
-    sw      $ra, 0($sp)                             # Salva o endereço de retorno em $sp
-    jal     loop_imprime_linha_separador_s
-    lw      $ra, 0($sp)                             # Carrega o endereço de retorno em $ra
-    addi    $sp, $sp, -4                            # Decrementa o stackpointer
-    jr      $ra
+    addi    $sp, $sp, 4                                     # Incrementa pilha
+    sw      $ra, 0($sp)                                     # Armazena endereço de retorno no topo da pilha
+    jal     print_indices_coluna_matriz_usuario             # Chama função
+    lw      $ra, 0($sp)                                     # Carrega o endereço de retorno do topo da pilha em $ra
+    addi    $sp, $sp, -4                                    # Decrementa pilha
+
+    addi    $sp, $sp, 4                                     # Incrementa pilha
+    sw      $ra, 0($sp)                                     # Armazena endereço de retorno no topo da pilha
+    jal     print_linha_separador_matriz_usuario            # Chama função
+    lw      $ra, 0($sp)                                     # Carrega o endereço de retorno do topo da pilha em $ra
+    addi    $sp, $sp, -4                                    # Decrementa pilha
+
+    addi    $sp, $sp, 4                                     # Incrementa pilha
+    sw      $ra, 0($sp)                                     # Armazena endereço de retorno no topo da pilha
+    jal     print_linhas_matriz_usuario                     # Chama função
+    lw      $ra, 0($sp)                                     # Carrega o endereço de retorno do topo da pilha em $ra
+    addi    $sp, $sp, -4                                    # Decrementa pilha
+
+    jr      $ra                                             # Retorna para o endereço em $ra
     
-    loop_imprime_indices_colunas_s:
-        # Compara
-        slt     $t1, $t0, $s0                              # Se i < n+1 então $t2 = 1
-        beq     $t1, $zero, fim_imprime_indices_colunas_s    # Vai para fim_imprime_indices_colunas_s
-        # Imprime o indice_coluna
-        addi    $a0, $t0, 1                                # $a0 = indice_coluna
-        li      $v0, 1                                     # $v0 = 1 Argumento para imprimir inteiro via syscall(MARS)
+    print_linhas_matriz_usuario:
+        addi    $t1, $zero, 0                                    # j = 0
+        mult    $s0, $t0                                         # n*i
+        mflo    $s3                                              # $s3 = n*i
+        beq     $t0, $s0, fim_print_linhas_matriz_usuario        #
+        # Imprime quebra de linha
+        li      $a0, '\n'                                        # Carrega o caractere quebra de linha em $a0
+        li      $v0, 11                                          # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
+        syscall
+        # Imprime indice linha
+        addi    $a0, $t0, 1                                      # $a0 recebe o valor de linha (i)
+        li      $v0, 1                                           # $v0 = 1 Argumento para imprimir inteiro via syscall(MARS)
         syscall
         # Imprime espaço
-        li     $a0, ' '                                    # Carrega o caractere espaço em $a0
-        li     $v0, 11                                     # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
+        li      $a0, ' '                                         # Carrega o caractere espaço em $a0
+        li      $v0, 11                                          # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
+        syscall
+        # Imprime barra
+        li      $a0, '|'                                         # Carrega o caractere barra em $a0
+        li      $v0, 11                                          # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
         syscall
 
-        addi    $t0, $t0, 1                                # Incrementa variável de controle
+        addi    $sp, $sp, 4                                     # Incrementa pilha
+        sw      $ra, 0($sp)                                     # Armazena endereço de retorno no topo da pilha
+        jal     print_valores_matriz_usuario                    # Chama função
+        lw      $ra, 0($sp)                                     # Carrega o endereço de retorno do topo da pilha em $ra
+        addi    $sp, $sp, -4                                    # Decrementa pilha
+
+        addi    $sp, $sp, 4                                     # Incrementa pilha
+        sw      $ra, 0($sp)                                     # Armazena endereço de retorno no topo da pilha
+        jal     print_linha_separador_matriz_usuario            # Chama função
+        lw      $ra, 0($sp)                                     # Carrega o endereço de retorno do topo da pilha em $ra
+        addi    $sp, $sp, -4                                    # Decrementa pilha
         
-        j loop_imprime_indices_colunas_s
+        addi    $t0, $t0, 1                                      # Incrementa i
 
-        fim_imprime_indices_colunas_s:
-            li     $a0, '\n'                                    # Carrega o caractere quebra de linha em $a0
-            li     $v0, 11                                      # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-            syscall
-            jr  $ra                                             # Retorna para onde foi chamado loop_imprime_indices_colunas_s
+        j       print_linhas_matriz_usuario                      # Volta pro loop
+
+    print_valores_matriz_usuario:
+        beq     $t1, $s0, fim_print_valores_matriz_usuario       # j == n
+
+        add     $t4, $t1, $s3                                    # $t4 = j+(i*n)
+
+        sll     $t4, $t4, 2                                      # Shift logical left
+        add     $t4, $s7, $t4                                    # $t4 = endereço+deslocamento
+        addi    $t1, $t1, 1                                      # Incrementa j em 1
+
+        lw      $a0, 0($t4)                                      # Carrega o valor em $a0
+        li      $v0, 11                                          # Chamada para imprimir caractere
+        syscall
+        # Imprime barra
+        li      $a0, '|'                                         # Carrega o caractere barra em $a0
+        li      $v0, 11                                          # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
+        syscall
+        j       print_valores_matriz_usuario                     # Retorna pro loop
     
-    loop_chama_imprime_linhas_s: beq      $t5, $t6, fim_loop_chama_imprime_linhas_s 
-            # Compara se i < n (Quantidade de elementos por linha)
-            addi    $sp, $sp, 4                                         # Incementa o stackpointer
-            sw      $ra, 0($sp)                                         # Salva o endereço de retorno em $sp
-            jal     loop_imprime_linha_separador_s
-            lw      $ra, 0($sp)                                         # Carrega o endereço de retorno em $ra
-            addi    $sp, $sp, -4                                        # Decrementa o stackpointer
-            addi    $a0, $t0, 1                                         # $a0 = indice_coluna
-            
-            # Imprime a linha e os caracteres
-            add     $a0, $zero, $t5                                        # Contador do loop
-            li      $v0, 1                                          # $v0 = 1 Argumento para imprimir inteiro via syscall(MARS)
-            syscall
-            li      $a0, ' '                                        # Carrega o caractere espaço em $a0
-            li      $v0, 11                                         # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-            syscall
-            addi    $t0, $zero, 0                                       # i = 0
-            #addi    $t1, $s0, -1                                        # $t1 = n-1
-            addi    $sp, $sp, 4                                         # Incementa o stackpointer
-            sw      $ra, 0($sp)                                         # Salva o endereço de retorno em $sp
-            jal     loop_imprime_linha
-            lw      $ra, 0($sp)                                         # Carrega o endereço de retorno em $ra
-            addi    $sp, $sp, -4                                        # Decrementa o stackpointer
-            addi    $a0, $t0, 1                                         # $a0 = indice_coluna
+        fim_print_valores_matriz_usuario:
+            jr      $ra                                          # Retorna pro endereço de chamada em $ra
 
-            addi    $t5, $t5, 1
-            j loop_chama_imprime_linhas_s
-        fim_loop_chama_imprime_linhas_s:
-            jr $ra
+    fim_print_linhas_matriz_usuario:
+        jr      $ra                                              # Retorna pro endereço de chamada em $ra
 
-        loop_imprime_linha_separador_s:
-            # Imprime espaço
-            li     $a0, ' '                                    # Carrega o caractere espaço em $a0
-            li     $v0, 11                                     # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-            syscall
-            syscall
-            li      $a0, '|'                                        # Carrega o caractere quebra de linha em $a0
-            li      $v0, 11                                         # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-            syscall
-            addi    $t0, $zero, 1                                   # i = 1
-            # Quantidade de caractere - == n+n
-            add     $t1, $s0, $s0                                   # n+n
-            j       loop_separador_s
-            loop_separador_s: beq     $t0, $t1, fim_loop_imprime_linha_separador_s      
-                li      $a0, '-'                                            # Carrega o caractere - em $a0
-                li      $v0, 11                                             # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-                syscall
+    print_indices_coluna_matriz_usuario:
+        li     $a0, ' '                                         # Carrega o caractere espaço em $a0
+        li     $v0, 11                                          # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
+        syscall
+        addi    $a0, $t0, 1                                     # Indice a ser impresso
+        li      $v0, 1                                          # Chamada para imprimir inteiro
+        syscall
+        addi    $t0, $t0, 1                                     # Incrementa indice
+        bne     $t0, $s0, print_indices_coluna_matriz_usuario   # Retorna ao loop
+        add     $t0, $zero, $zero                               # Volta o valor de $t0 para 0
+        jr      $ra                                             # Volta para o endereço de retorno
 
-                addi    $t0, $t0, 1                                         # incrementa em um o contador
-                j       loop_separador_s
+    print_linha_separador_matriz_usuario:
+        li      $a0, 5                                      # Carrega 5 em $a0 para comparação
+        beq     $a0, $s0, print_linha_separador_tamanho_5   # Se for igual a 5 o tamanho da matriz chama função
+        li      $a0, 7                                      # Carrega 7 em $a0 para comparação
+        beq     $a0, $s0, print_linha_separador_tamanho_7   # Se for igual a 7 o tamanho da matriz chama função        
+        li      $a0, 9                                      # Carrega 9 em $a0 para comparação
+        beq     $a0, $s0, print_linha_separador_tamanho_9   # Se for igual a 9 o tamanho da matriz chama função
 
-            fim_loop_imprime_linha_separador_s:
-                li      $a0, '|'                                        # Carrega o caractere quebra de linha em $a0
-                li      $v0, 11                                         # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-                syscall
-                li      $a0, '\n'                                           # Carrega o caractere quebra de linha em $a0
-                li      $v0, 11                                             # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-                syscall
-                jr      $ra
+print_matriz_sistema:
+    # Imprime quebra de linha
+    li     $a0, '\n'                                        # Carrega o caractere quebra de linha em $a0
+    li     $v0, 11                                          # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
+    syscall
+    # Imprime 2 espaços para os indices:
+    li     $a0, ' '                                         # Carrega o caractere espaço em $a0
+    li     $v0, 11                                          # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
+    syscall
+    syscall
 
-        loop_imprime_linha_s: beq     $t0, $s0, fim_loop_imprime_linha
-            li      $a0, '|'                                        # Carrega o caractere | em $a0
-            li      $v0, 11                                         # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-            syscall
-            lw      $a0, matriz_sistema($s3)                        # $teste2 recebe o caractere a ser impresso
-            li      $v0, 11                                         # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-            syscall
+    addi    $t0, $zero, 0                                   # Variável de controle (i)
+    addi    $t1, $zero, 0                                   # Variável de controle (j)
+    la      $s7, matriz_sistema                             # Endereço da matriz
+    addi    $t3, $zero, 0                                   # Shift logical left
+    addi    $t4, $zero, 0                                   # Endereço da matriz + shift left
 
-            addi    $s3, $s3, 4                                     # Incrementa posição no vetor
-            addi    $t0, $t0, 1                                     # Incrementa contador
-            j loop_imprime_linha_s
+    addi    $sp, $sp, 4                                     # Incrementa pilha
+    sw      $ra, 0($sp)                                     # Armazena endereço de retorno no topo da pilha
+    jal     print_indices_coluna_matriz_sistema             # Chama função
+    lw      $ra, 0($sp)                                     # Carrega o endereço de retorno do topo da pilha em $ra
+    addi    $sp, $sp, -4                                    # Decrementa pilha
 
-            fim_loop_imprime_linha_s:
-                li      $a0, '|'                                            # Carrega o caractere | em $a0
-                li      $v0, 11                                             # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-                syscall
-                li      $a0, '\n'                                           # Carrega o caractere quebra de linha em $a0
-                li      $v0, 11                                             # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
-                syscall
-                jr      $ra
+    addi    $sp, $sp, 4                                     # Incrementa pilha
+    sw      $ra, 0($sp)                                     # Armazena endereço de retorno no topo da pilha
+    jal     print_linha_separador_matriz_sistema            # Chama função
+    lw      $ra, 0($sp)                                     # Carrega o endereço de retorno do topo da pilha em $ra
+    addi    $sp, $sp, -4                                    # Decrementa pilha
+
+    addi    $sp, $sp, 4                                     # Incrementa pilha
+    sw      $ra, 0($sp)                                     # Armazena endereço de retorno no topo da pilha
+    jal     print_linhas_matriz_sistema                     # Chama função
+    lw      $ra, 0($sp)                                     # Carrega o endereço de retorno do topo da pilha em $ra
+    addi    $sp, $sp, -4                                    # Decrementa pilha
+
+    jr      $ra                                             # Retorna para o endereço em $ra
+    
+    print_linhas_matriz_sistema:
+        addi    $t1, $zero, 0                                    # j = 0
+        mult    $s0, $t0                                         # n*i
+        mflo    $s3                                              # $s3 = n*i
+        beq     $t0, $s0, fim_print_linhas_matriz_sistema        #
+        # Imprime quebra de linha
+        li      $a0, '\n'                                        # Carrega o caractere quebra de linha em $a0
+        li      $v0, 11                                          # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
+        syscall
+        # Imprime indice linha
+        addi    $a0, $t0, 1                                      # $a0 recebe o valor de linha (i)
+        li      $v0, 1                                           # $v0 = 1 Argumento para imprimir inteiro via syscall(MARS)
+        syscall
+        # Imprime espaço
+        li      $a0, ' '                                         # Carrega o caractere espaço em $a0
+        li      $v0, 11                                          # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
+        syscall
+        # Imprime barra
+        li      $a0, '|'                                         # Carrega o caractere barra em $a0
+        li      $v0, 11                                          # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
+        syscall
+
+        addi    $sp, $sp, 4                                     # Incrementa pilha
+        sw      $ra, 0($sp)                                     # Armazena endereço de retorno no topo da pilha
+        jal     print_valores_matriz_sistema                    # Chama função
+        lw      $ra, 0($sp)                                     # Carrega o endereço de retorno do topo da pilha em $ra
+        addi    $sp, $sp, -4                                    # Decrementa pilha
+
+        addi    $sp, $sp, 4                                     # Incrementa pilha
+        sw      $ra, 0($sp)                                     # Armazena endereço de retorno no topo da pilha
+        jal     print_linha_separador_matriz_sistema            # Chama função
+        lw      $ra, 0($sp)                                     # Carrega o endereço de retorno do topo da pilha em $ra
+        addi    $sp, $sp, -4                                    # Decrementa pilha
+        
+        addi    $t0, $t0, 1                                      # Incrementa i
+
+        j       print_linhas_matriz_sistema                      # Volta pro loop
+
+    print_valores_matriz_sistema:
+        beq     $t1, $s0, fim_print_valores_matriz_sistema       # j == n
+
+        add     $t4, $t1, $s3                                    # $t4 = j+(i*n)
+
+        sll     $t4, $t4, 2                                      # Shift logical left
+        add     $t4, $s7, $t4                                    # $t4 = endereço+deslocamento
+        addi    $t1, $t1, 1                                      # Incrementa j em 1
+
+        lw      $a0, 0($t4)                                      # Carrega o valor em $a0
+        li      $v0, 11                                          # Chamada para imprimir caractere
+        syscall
+        # Imprime barra
+        li      $a0, '|'                                         # Carrega o caractere barra em $a0
+        li      $v0, 11                                          # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
+        syscall
+        j       print_valores_matriz_sistema                     # Retorna pro loop
+    
+        fim_print_valores_matriz_sistema:
+            jr      $ra                                          # Retorna pro endereço de chamada em $ra
+
+    fim_print_linhas_matriz_sistema:
+        jr      $ra                                              # Retorna pro endereço de chamada em $ra
+
+    print_indices_coluna_matriz_sistema:
+        li     $a0, ' '                                         # Carrega o caractere espaço em $a0
+        li     $v0, 11                                          # $v0 = 11 Argumento para imprimir caractere via syscall(MARS)
+        syscall
+        addi    $a0, $t0, 1                                     # Indice a ser impresso
+        li      $v0, 1                                          # Chamada para imprimir inteiro
+        syscall
+        addi    $t0, $t0, 1                                     # Incrementa indice
+        bne     $t0, $s0, print_indices_coluna_matriz_sistema   # Retorna ao loop
+        add     $t0, $zero, $zero                               # Volta o valor de $t0 para 0
+        jr      $ra                                             # Volta para o endereço de retorno
+
+    print_linha_separador_matriz_sistema:
+        li      $a0, 5                                      # Carrega 5 em $a0 para comparação
+        beq     $a0, $s0, print_linha_separador_tamanho_5   # Se for igual a 5 o tamanho da matriz chama função
+        li      $a0, 7                                      # Carrega 7 em $a0 para comparação
+        beq     $a0, $s0, print_linha_separador_tamanho_7   # Se for igual a 7 o tamanho da matriz chama função        
+        li      $a0, 9                                      # Carrega 9 em $a0 para comparação
+        beq     $a0, $s0, print_linha_separador_tamanho_9   # Se for igual a 9 o tamanho da matriz chama função
+
+print_linha_separador_tamanho_5:
+    la      $a0, msg_barra_5                                    # Carrega o endereço de msg_barra_5 em $a0
+    li      $v0, 4                                              # Chamada para imprimir string
+    syscall
+    jr      $ra                                                 # Volta para o endereço de retorno em $ra
+
+print_linha_separador_tamanho_7:
+    la      $a0, msg_barra_7                                    # Carrega o endereço de msg_barra_7 em $a0
+    li      $v0, 4                                              # Chamada para imprimir string
+    syscall
+    jr      $ra                                                 # Volta para o endereço de retorno em $ra
+
+print_linha_separador_tamanho_9:
+    la      $a0, msg_barra_9                                    # Carrega o endereço de msg_barra_9 em $a0
+    li      $v0, 4                                              # Chamada para imprimir string
+    syscall
+    jr      $ra                                                 # Volta para o endereço de retorno em $ra
 
 calcula_bombas:
-    add     $t0, $zero, $zero           # Inicia i
-    add     $t1, $zero, $zero           # Posição na word
-    addi    $t9, $zero, 9               # Valor a ser comparado
-    j     calcula_bombas          # Pula para calcula bombas
+    addi    $t0, $zero, 0                       # Inicia i
+    addi    $t1, $zero, 0                       # Inicia j
+    addi    $t2, $zero, 0                       # 
+    addi    $t3, $zero, 0                       # 
+    addi    $t4, $zero, 4                       # $t4 == 4
+    addi    $s3, $zero, 0                       # $s3 é o endereço+deslocamento
+    addi    $s5, $zero, 0                       # Contador de bombas
+    la      $s7, matriz_sistema                 # Endereço
+    li      $t9, '9'                            # Valor a ser comparado
+    j       loop_calcula_bombas_linhas          # Pula para o loop calcula bombas linhas
 
-    loop_calcula_bombas:    beq     $t0, $s1, fim_loop_calcula_bombas
-        add     $s4, $zero, $zero           # Valor a ser colocado na matriz
-        lw      $t2, matriz_sistema($t1)                            # Carrega o valor do vetor em um registrador temporario
-        beq     $t2, $t9, incrementa_retorna_loop_calcula_bombas    # Verifica se o valor é 9
+    loop_calcula_bombas_linhas:
+        beq     $t0, $s0, encerra_calculo                               # if (i == n) break 
+        mult    $t0, $s0                                                # i*n
+        mflo    $t3                                                     # $t3 = i*n
+        j		loop_calcula_bombas_colunas		                        # jump to loop_calcula_bombas_colunas
         
-        addi    $sp, $sp, 4                             # Incrementa o stackpointer
-        sw      $ra, 0($sp)                             # Salva o endereço de retorno em $sp
-        jal     verificando_acima
-        lw      $ra, 0($sp)                             # Carrega o endereço de retorno em $ra
-        addi    $sp, $sp, -4                            # Decrementa o stackpointer
+        loop_calcula_bombas_colunas:
+            beq     $t1, $s0, incrementa_loop_calcula_bombas_linhas     # if (j == n)
 
-        
-        incrementa_retorna_loop_calcula_bombas:
-            addi    $t0, $t0, 1                 # Incrementa a variável de controle (i)
-            addi    $t1, $t1, 4                 # Incrementa a posição na word
-            jr      $ra
+            add     $t4, $t3, $t1                                       # (i*n)+j
+            sll     $t4, $t4, 2                                         # ((i*n)+j)*4
+            li      $s6, '0'                                            # Valor a ser inserido
+            add     $s3, $s7, $t4                                       # Endereço + Deslocamento
+            lw      $a0, 0($s3)                                         # Carrega o valor em $a0
 
-        # if (i-num_linhas > 0 && campo[i-numlinhas] == 9) contador += 1
-        verificando_acima:
-            addi    $t5, $zero, 1                   # $t5 = 1
-            sub     $t3, $t0, $s0                   # $t3 = i-n
-            slt     $t4, $t3, $t5                   # Se i-num_linhas < 1 ? 1 : 0
-            beq     $t4, $zero, verificando_0_1     # Segunda parte da verificação
-            jr  	$ra				                # Retorna para a linha de onde foi chamada a função
-            verificando_acima_1:
-                lw      $t5, matriz_sistema($t3)
-                beq     $t5, $t9, incrementa_calculo_em_1        # Incrementa 1 em $s4
-                jr      $ra
-        # if (i+num_linhas < num_linhas*num_linhas && campo[i+num_linhas] == 9)
-        verificando_abaixo:
-            addi    $t5, $zero, 1               # 1
-            add     $t3, $t0, $s0               # i+n
-            slt     $t4, $t3, $s1               # $t4 = i+n < n*n ? 1 : 0
-            beq     $t4, $t5, verificando_1_1  # Se então
-            jr      $ra
-            verificando_abaixo_1:
-                lw      $t5, matriz_sistema($t3)
-                beq     $t5, $t9, incrementa_calculo_em_1
-                jr      $ra
-        verificando_a_esquerda:
-            addi    $t5, $zero, 1               # 1
-            sub     $t3, $t0, $t5               # $t3 = i-1
-            slt     $t4, $t3, $zero             # $t4 = (i-1) < 0 ? 1 : 0
-            beq     $t4, $zero, verificando_a_esquerda_1
-            jr      $ra
-            verificando_a_esquerda_1:
+            beq     $t9, $a0, incrementa_loop_calcula_bombas_colunas    # if(valor == '9')
             
+            #### Verificações ####
 
+            addi    $sp, $sp, 4                                         # Incrementa Stack Pointer
+            sw      $ra, 0($sp)                                         # Salva $ra no topo de $sp
+            jal     verifica_acima                                      # 
+            lw      $ra, 0($sp)                                         # Carrega $ra do topo em $sp
+            addi    $sp, $sp, -4                                        # Incrementa Stack Pointer
 
-        incrementa_calculo_em_1:
-            addi    $s4, $s4, 1                 # $s4 += 1
-            sw      $s4, matriz_sistema($t1)    # Coloca na matriz o valor calculado
-            jr      $ra
-    fim_loop_calcula_bombas:
-        jr      $ra 
+            addi    $sp, $sp, 4                                         # Incrementa Stack Pointer
+            sw      $ra, 0($sp)                                         # Salva $ra no topo de $sp
+            jal     verifica_abaixo                                     # 
+            lw      $ra, 0($sp)                                         # Carrega $ra do topo em $sp
+            addi    $sp, $sp, -4                                        # Incrementa Stack Pointer
+
+            addi    $sp, $sp, 4                                         # Incrementa Stack Pointer
+            sw      $ra, 0($sp)                                         # Salva $ra no topo de $sp
+            jal     verifica_esquerda                                   # 
+            lw      $ra, 0($sp)                                         # Carrega $ra do topo em $sp
+            addi    $sp, $sp, -4                                        # Incrementa Stack Pointer
+
+            addi    $sp, $sp, 4                                         # Incrementa Stack Pointer
+            sw      $ra, 0($sp)                                         # Salva $ra no topo de $sp
+            jal     verifica_direita                                    #
+            lw      $ra, 0($sp)                                         # Carrega $ra do topo em $sp
+            addi    $sp, $sp, -4                                        # Incrementa Stack Pointer
+
+            addi    $sp, $sp, 4                                         # Incrementa Stack Pointer
+            sw      $ra, 0($sp)                                         # Salva $ra no topo de $sp
+            jal     verifica_diagonal_inferior_esquerda                 #
+            lw      $ra, 0($sp)                                         # Carrega $ra do topo em $sp
+            addi    $sp, $sp, -4                                        # Incrementa Stack Pointer
+
+            addi    $sp, $sp, 4                                         # Incrementa Stack Pointer
+            sw      $ra, 0($sp)                                         # Salva $ra no topo de $sp
+            jal     verifica_diagonal_inferior_direita                  # 
+            lw      $ra, 0($sp)                                         # Carrega $ra do topo em $sp
+            addi    $sp, $sp, -4                                        # Incrementa Stack Pointer
+
+            addi    $sp, $sp, 4                                         # Incrementa Stack Pointer
+            sw      $ra, 0($sp)                                         # Salva $ra no topo de $sp
+            jal     verifica_diagonal_superior_esquerda                 # 
+            lw      $ra, 0($sp)                                         # Carrega $ra do topo em $sp
+            addi    $sp, $sp, -4                                        # Incrementa Stack Pointer
+
+            addi    $sp, $sp, 4                                         # Incrementa Stack Pointer
+            sw      $ra, 0($sp)                                         # Salva $ra no topo de $sp
+            jal     verifica_diagonal_superior_direita                  # 
+            lw      $ra, 0($sp)                                         # Carrega $ra do topo em $sp
+            addi    $sp, $sp, -4                                        # Incrementa Stack Pointer
+
+            sw      $s6, 0($s3)                                         # Store new value
+
+            j       incrementa_loop_calcula_bombas_colunas
+
+    # if(i-1 >= 0)
+    verifica_acima:
+        addi    $t5, $t0, -1                        # i-1
+        addi    $t6, $t1, 0                         # j
+        slt     $t7, $t5, $zero                     # i-1 < 0 ? 1 : 0
+        beq     $t7, $zero, verifica_nove           # Se i-1 >= 0
+        jr      $ra                                 # Return;
+
+    # if(i+1 < n)
+    verifica_abaixo:
+        addi    $t5, $t0, 1                         # i+1
+        addi    $t6, $t1, 0                         # j
+        slt     $t7, $t5, $s0                       # i+1 < n ? 1 : 0
+        bne     $t7, $zero, verifica_nove           # Se i+1 < n
+        jr      $ra                                 # Return;
+
+    # if(i >= 0 && j-1 >= 0)
+    verifica_esquerda:
+        addi    $t5, $t0, 0                         # i
+        addi    $t6, $t1, -1                        # j-1
+        slt     $t7, $t5, $zero                     # i < 0 ? 1 : 0
+        beq     $t7, $zero, verifica_esquerda_1     # Se i >= 0
+        jr      $ra                                 # Return;
+        verifica_esquerda_1:
+            slt     $t7, $t6, $zero                 # j-1 < 0 ? 1 : 0
+            beq     $t7, $zero, verifica_nove       # Se i-1 >= 0
+            jr      $ra                             # Return;
+
+    # if(i < n && j+1 < n)
+    verifica_direita:
+        addi    $t5, $t0, 0                         # i
+        addi    $t6, $t1, 1                         # j+1
+        slt     $t7, $t0, $s0                       # i < n ? 1 : 0
+        bne     $t7, $zero, verifica_direita_1      # Se i < n
+        jr      $ra                                 # Return;
+        verifica_direita_1:
+            slt     $t7, $t6, $s0                   # j+1 < n ? 1 : 0
+            bne     $t7, $zero, verifica_nove       # Se j+1 < n
+            jr      $ra                             # Return;
+    
+    # if(i-1 >= 0 && j-1 >= 0)
+    verifica_diagonal_inferior_esquerda:
+        addi    $t5, $t0, -1                    # i-1
+        addi    $t6, $t1, -1                    # j-1
+        slt     $t7, $t5, $zero                 # i-1 < 0 ? 1 : 0
+        beq     $t7, $zero, verifica_diagonal_inferior_esquerda_1   # Se i-1 >= 0
+        jr      $ra                             # Return;
+        verifica_diagonal_inferior_esquerda_1:
+            slt     $t7, $t6, $zero             # j-1 < 0 ? 1 : 0
+            beq     $t7, $zero, verifica_nove   # Se j-1 >= 0
+            jr      $ra                         # Return;
+    
+    # if(i+1 < n && j-1 >= 0)
+    verifica_diagonal_superior_esquerda:
+        addi    $t5, $t0, 1                     # i+1
+        addi    $t6, $t1, -1                    # j-1
+        slt     $t7, $t5, $s0                   # i+1 < n ? 1 : 0
+        bne     $t7, $zero, verifica_diagonal_superior_esquerda_1   # Se i+1 < n
+        jr      $ra                             # Return;
+        verifica_diagonal_superior_esquerda_1:
+            slt     $t7, $t6, $zero             # j-1 < 0 ? 1 : 0
+            beq     $t7, $zero, verifica_nove   # Se j-1 >= 0
+            jr      $ra                         # Return;
+
+    # if(i-1 >= 0 && j+1 < n)
+    verifica_diagonal_inferior_direita:
+        addi    $t5, $t0, -1                    # i-1
+        addi    $t6, $t1, 1                     # j+1
+        slt     $t7, $t5, $zero                 # i-1 < 0 ? 1 : 0
+        beq     $t7, $zero, verifica_diagonal_inferior_direita_1   # Se i-1 >= 0
+        jr      $ra                             # Return;
+        verifica_diagonal_inferior_direita_1:
+            slt     $t7, $t6, $s0               # j+1 < n ? 1 : 0
+            beq     $t7, $zero, verifica_nove   # Se j+1 < n
+            jr      $ra                         # Return;
+
+    # if(i+1 < n && j+1 < n)
+    verifica_diagonal_superior_direita:
+        addi    $t5, $t0, 1                     # i+1
+        addi    $t6, $t1, 1                     # j+1
+        slt     $t7, $t5, $zero                 # i+1 < n ? 1 : 0
+        bne     $t7, $zero, verifica_diagonal_superior_direita_1   # Se j+1 < n
+        jr      $ra                             # Return;
+        verifica_diagonal_superior_direita_1:
+            slt     $t7, $t6, $s0               # j+1 < n ? 1 : 0
+            bne     $t7, $zero, verifica_nove   # Se j+1 < n
+            jr      $ra                         # Return;
+
+    verifica_nove:
+        add     $t7, $t5, $t6                   # i*n+j
+        sll     $t7, $t7, 2                     # (i*n+j)*4
+        add     $t7, $s7, $t7                   # Endereço+Deslocamento
+        lw      $t8, 0($t7)                     # t8 verifica se possui um 9 na posição
+        beq     $t9, $t8, verifica_insercao     # Vai para inserção
+        jr      $ra                             # Return;
+
+    verifica_insercao:
+        li      $a0, '0'                        # load 0 to compare
+        beq     $a0, $s6, incrementa_1          # $s6 vira '1'
+        li      $a0, '1'                        # load 0 to compare
+        beq     $a0, $s6, incrementa_2          # $s6 vira '2'
+        li      $a0, '2'                        # load 0 to compare
+        beq     $a0, $s6, incrementa_3          # $s6 vira '3'
+        li      $a0, '3'                        # load 0 to compare
+        beq     $a0, $s6, incrementa_4          # $s6 vira '4'
+        li      $a0, '4'                        # load 0 to compare
+        beq     $a0, $s6, incrementa_5          # $s6 vira '5'
+        li      $a0, '5'                        # load 0 to compare
+        beq     $a0, $s6, incrementa_6          # $s6 vira '6'
+        li      $a0, '6'                        # load 0 to compare
+        beq     $a0, $s6, incrementa_7          # $s6 vira '7'
+        li      $a0, '7'                        # load 0 to compare
+        beq     $a0, $s6, incrementa_8          # $s6 vira '8'
+        jr      $ra
+        incrementa_1:
+            li      $s6, '1'                    # $s6 == 1
+            jr      $ra                         # Return;
+        incrementa_2:
+            li      $s6, '2'                    # $s6 == 1
+            jr      $ra                         # Return;
+        incrementa_3:
+            li      $s6, '3'                    # $s6 == 1
+            jr      $ra                         # Return;
+        incrementa_4:
+            li      $s6, '4'                    # $s6 == 1
+            jr      $ra                         # Return;
+        incrementa_5:
+            li      $s6, '5'                    # $s6 == 1
+            jr      $ra                         # Return;
+        incrementa_6:
+            li      $s6, '6'                    # $s6 == 1
+            jr      $ra                         # Return;
+        incrementa_7:
+            li      $s6, '7'                    # $s6 == 1
+            jr      $ra                         # Return;
+        incrementa_8:
+            li      $s6, '8'                    # $s6 == 1
+            jr      $ra                         # Return;
+    incrementa_loop_calcula_bombas_linhas:
+        addi    $t1, $zero, 0                   # j = 0;
+        addi    $t0, $t0, 1                     # i++;
+        j       loop_calcula_bombas_linhas      # Volta para o loop
+
+    incrementa_loop_calcula_bombas_colunas:
+        addi    $t1, $t1, 1                     # j++;
+        j       loop_calcula_bombas_colunas     # Volta para o loop
+
+    encerra_calculo:
+        jr      $ra                             # Volta para $ra
