@@ -1,7 +1,10 @@
 # Cabeçalho de registradores salvos usados:
 # $s0 = n
 # $s1 = n*n
-# $s5 = número de posições sem bomba
+# $s2 = Quantidade de jogadas válidas
+# $s3 = 
+# $s4 = 
+# $s5 = Contador de bombas
 # $s6 = matriz_sistema
 # $s7 = matriz_usuario
 .data
@@ -13,6 +16,11 @@
     msg_test_fim_main:      .asciiz "\n----FIM_MAIN----\n"
     msg_seleciona_opc:      .asciiz "\nDigite qual o tamanho que deseja que a matriz tenha\na) 5x5\nb) 7x7\nc) 9x9\n-> "
     msg_jogar_novamente:    .asciiz "\nPara Jogar novamente digite 1 ou para encerrar a execução digite 0\n-> "
+    msg_selec_linha:        .asciiz "\nDigite a linha (1 a n):\n-> "
+    msg_selec_coluna:       .asciiz "\nDigite a coluna (1 a n):\n-> "
+    msg_derrota:            .asciiz "\nVocê Perdeu !\nJogadas antes da bomba: "
+    msg_opcao_nao_valida:   .asciiz "\nOpção inválida !\n"
+    msg_vitoria:            .asciiz "\nParabéns, você venceu !\n"
     # Vetores(Matrizes)
     matriz_usuario:         .word '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?'              # Matriz que o usuário verá
     matriz_sistema:         .word '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'              # Matriz respectiva ao funcionamento do jogo
@@ -29,17 +37,21 @@ main:
         syscall
         add     $s0, $v0, $zero                         # Salva a entrada em $s0
         
+        addi    $s2, $zero, 0                           # $s2 é quantidade de jogadas válidas
         jal     opcao_para_n                            # Vai para a 'função' e linka o retorno a esta linha
 
         jal     insere_bombas                           # Insere a bomba
-        jal     calcula_bombas                          # 
-        jal     print_matriz_usuario
-        jal     print_matriz_sistema
+        jal     calcula_bombas                          # Calcula bombas
         
-        #j       seleciona_jogar_novamente               # Verifica se o usuário deseja jogar novamente    
-        la		$a0, msg_test_fim_main		            # Carrega o endereço do array .asciiz referente a mensagem de selecionar a opção
-        li		$v0, 4                                  # $v0 = 4 Argumento para imprimir array(string) via syscall(MARS)
-        syscall                                         # Imprime a mensagem da seleção da opção
+        jal     menu_jogo                               # Menu jogo
+
+        #jal     print_matriz_usuario
+        #jal     print_matriz_sistema
+        
+        #j       seleciona_jogar_novamente              # Verifica se o usuário deseja jogar novamente    
+        #la		$a0, msg_test_fim_main		            # Carrega o endereço do array .asciiz referente a mensagem de selecionar a opção
+        #li		$v0, 4                                  # $v0 = 4 Argumento para imprimir array(string) via syscall(MARS)
+        #syscall                                        # Imprime a mensagem da seleção da opção
 
 
 
@@ -212,13 +224,151 @@ insere_bombas:
 
 menu_jogo:
     addi        $t0, $zero, 0                                               # i = 0
+    addi        $s3, $zero, 0                                               # $s3 = 0 
+    sub         $s4, $s1, $s5                                               # $s4 = n*n-$s5
+    li          $t9, '9'                                                    # 
+    la          $s6, matriz_usuario                                         # 
+    la          $s7, matriz_sistema                                         # 
+    
+    add         $a0, $s3, $zero
+    li          $v0, 1
+    syscall
+    li          $a0, '-'
+    li          $v0, 11
+    syscall
+    add         $a0, $s4, $zero
+    li          $v0, 1
+    syscall
+    li          $a0, '\n'
+    li          $v0, 11
+    syscall
+    
     addi        $sp, $sp, 4                                                 # Incrementa o stack pointer
     sw          $ra, 0($sp)                                                 # Salva o endereço de retorno no stack pointer
     jal         loop_menu                                                   # Chama o loop_menu e linka a esta linha
     lw          $ra, 0($sp)                                                 # Pega o endereço que havia sido salvo no stack pointer e coloca em $ra
     addi        $sp, $sp, -4                                                # Decremente o stack pointer
+    
     jr          $ra                                                         # volta ao $ra
+    
     loop_menu:
+        beq     $s3, $s4, fim_vitoria                                       # Se todas as jogadas válidas possíveis foram feitas
+
+        addi        $sp, $sp, 4                                             # Incrementa o stack pointer
+        sw          $ra, 0($sp)                                             # Salva o endereço de retorno no stack pointer
+        jal         print_matriz_usuario                                    # Chama o loop_menu e linka a esta linha
+        lw          $ra, 0($sp)                                             # Pega o endereço que havia sido salvo no stack pointer e coloca em $ra
+        addi        $sp, $sp, -4                                            # Decremente o stack pointer
+
+        la      $a0, msg_selec_linha                                        # Carrega endereço de seleciona msg_selec_linha
+        li      $v0, 4                                                      # Chamada para imprimir string
+        syscall
+
+        li      $v0, 5                                                      # Chamada para ler inteiro
+        syscall
+
+        addi    $t0, $v0, -1                                                # Carrega o valor lido em $v1
+
+        la      $a0, msg_selec_coluna                                       # Carrega endereço de seleciona msg_selec_coluna
+        li      $v0, 4                                                      # Chamada para imprimir string
+        syscall
+
+        li      $v0, 5                                                      # Chamada para ler inteiro
+        syscall
+
+        addi    $t1, $v0, -1                                                # Carrega o valor lido em $v1
+
+        # i == $v0, j == $v1
+        addi        $sp, $sp, 4                                             # Incrementa o stack pointer
+        sw          $ra, 0($sp)                                             # Salva o endereço de retorno no stack pointer
+        jal         verifica_jogada                                         # Chama o loop_menu e linka a esta linha
+        lw          $ra, 0($sp)                                             # Pega o endereço que havia sido salvo no stack pointer e coloca em $ra
+        addi        $sp, $sp, -4                                            # Decremente o stack pointer
+
+        j       loop_menu                                                   # Retorna pro loop
+        
+    verifica_jogada:
+        mult    $t0, $s0                                                    # i*n
+        mflo    $t0                                                         # $v0 = i*n
+        add     $t0, $t0, $t1                                               # $t0 = i*n+j
+        sll     $t0, $t0, 2                                                 # $t0 = (i*n+j)*4
+
+        la      $s6, matriz_sistema                                         #
+        add     $t1, $s6, $t0                                               # Endereço + deslocamento (sistema)
+        lw      $t3, 0($t1)                                                 # Load Word (sistema)
+
+        la      $s6, matriz_usuario                                         #
+        add     $t2, $s6, $t0                                               # Endereço + deslocamento (usuario)
+        lw      $t4, 0($t2)                                                 # Load Word (usuario)
+
+       # lw      $a0, 0($t1)
+       # li      $v0, 11
+       # syscall
+       #lw      $a0, 0($t2)
+        #li      $v0, 11
+        #syscall
+
+        add         $a0, $s3, $zero
+        li          $v0, 1
+        syscall
+        li          $a0, '-'
+        li          $v0, 11
+        syscall
+        add         $a0, $s4, $zero
+        li          $v0, 1
+        syscall
+        li          $a0, '\n'
+        li          $v0, 11
+        syscall
+
+        beq     $t3, $t9, bomba_encerra_jogo                                # Bomba
+        beq     $t3, $t4, opcao_nao_valida                                  # Posição já jogada
+        add     $t8, $s3, $s5                                               # Jogadas + bombas
+        #slt     $a0, $s3, $s4   
+        beq     $t8, $s1, fim_vitoria                                       # 
+        
+        sw      $t3, 0($t2)                                                 # Coloca o valor no tabuleiro (usuario)
+        addi    $s3, $s3, 1                                                 # Incrementa jogadas válidas
+        jr      $ra                                                         # Volta pro loop
+
+        bomba_encerra_jogo:
+            sw      $t1, 0($t2)                                             # Coloca a bomba no tabuleiro
+
+            addi    $sp, $sp, 4                                             # Incrementa sp
+            sw      $ra, 0($sp)                                             # Coloca o valor em sp
+            jal     print_matriz_usuario
+            lw      $ra, 0($sp)                                             # Pega o valor de sp
+            addi    $sp, $sp, -4                                            # Decrementa sp
+
+            addi    $sp, $sp, 4                                             # Incrementa sp
+            sw      $ra, 0($sp)                                             # Coloca o valor em sp
+            jal     print_matriz_sistema
+            lw      $ra, 0($sp)                                             # Pega o valor de sp
+            addi    $sp, $sp, -4                                            # Decrementa sp
+            
+            la      $a0, msg_derrota                                        # Carrega msg
+            li      $v0, 4                                                  # Chamada pra imprimir string
+            syscall
+            
+            add     $a0, $s3, $zero                                         # 
+            li      $v0, 1                                                  # Chamada para imprimir int
+            syscall
+
+            li      $a0, '\n'                                               # 
+            li      $v0, 11                                                 # Chamada para imprimir caractere
+            syscall
+
+            j       exit                                                    # Encerra execução
+
+        opcao_nao_valida:
+            la      $a0, msg_opcao_nao_valida                               #
+            li      $v0, 4                                                  # Chamada string
+            syscall
+            j       loop_menu                                               # Volta pro loop
+        fim_vitoria:
+            la      $a0, msg_vitoria                                        # 
+            li      $v0, 4                                                  # Chama string
+            j       exit
 
 print_matriz_usuario:
     # Imprime quebra de linha
@@ -486,7 +636,7 @@ calcula_bombas:
     addi    $s5, $zero, 0                       # Contador de bombas
     la      $s7, matriz_sistema                 # Endereço
     li      $t9, '9'                            # Valor a ser comparado
-    li      $s6, '0'                                            # Valor a ser inserido
+    li      $s6, '0'                            # Valor a ser inserido
     j       loop_calcula_bombas_linhas          # Pula para o loop calcula bombas linhas
 
     loop_calcula_bombas_linhas:
@@ -503,7 +653,7 @@ calcula_bombas:
             add     $s3, $s7, $t4                                       # Endereço + Deslocamento
             lw      $a0, 0($s3)                                         # Carrega o valor em $a0
 
-            beq     $t9, $a0, incrementa_loop_calcula_bombas_colunas    # if(valor == '9')
+            beq     $t9, $a0, bomba_encontrada                          # if(valor == '9')
             
             #### Verificações ####
 
@@ -558,6 +708,10 @@ calcula_bombas:
             sw      $s6, 0($s3)                                         # Store new value
             li      $s6, '0'
             j       incrementa_loop_calcula_bombas_colunas
+
+    bomba_encontrada:
+        addi    $s5, $s5, 1                                             # Contador de bombas incrementado
+        j   incrementa_loop_calcula_bombas_colunas                      # Incrementa
 
     # if(i-1 >= 0)
     verifica_acima:
