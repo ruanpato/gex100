@@ -8,6 +8,15 @@
 # $s6 = matriz_sistema
 # $s7 = matriz_usuario
 .data
+    # Função professor
+    semente:		.asciiz		"\nEntre com a semente da funcao Rand: "
+    espaco:			.asciiz		" "
+    nova_linha:		.asciiz		"\n"
+    posicao:		.asciiz		"\nPosicao: "
+    salva_S0:		.word		0
+    salva_ra:		.word		0
+    salva_ra1:		.word		0
+    # Função professor
     # Mensagens
     msg_barra_5:            .asciiz "\n  |---------|"
     msg_barra_7:            .asciiz "\n  |-------------|"
@@ -40,6 +49,8 @@ main:
         addi    $s2, $zero, 0                           # $s2 é quantidade de jogadas válidas
         jal     opcao_para_n                            # Vai para a 'função' e linka o retorno a esta linha
 
+        la      $a0, matriz_sistema                     # $a0 = matriz_sistema
+        add     $a1, $s0, $zero                         # $a1 = n
         jal     insere_bombas                           # Insere a bomba
         jal     calcula_bombas                          # Calcula bombas
         
@@ -97,130 +108,6 @@ seleciona_jogar_novamente:
     syscall
     beq     $v0, $zero, exit                                                # Se a opção for zero chama função que encerra a execução
     j       main                                                            # Se não for igual vai para main
-
-insere_bombas_aux:
-    addi    $t0, $zero, 0                                                  # $t0 == i = 0
-    li      $t9, '9'                                                        # 9 é uma bomba
-    addi    $t0, $zero, 0                                                   # $t0 == i = 0
-    li      $t1, 5                                                          # compara se é 5
-    beq     $t1, $s0, matriz_5_aux                                              # Se for igual vai para função que insere na de 5
-    li      $t1, 7                                                          # compara se é 7
-    beq     $t1, $s0, matriz_7_aux                                              # Se for igual vai para função que insere na de 7
-    li      $t1, 9                                                          # compara se é 9
-    beq     $t1, $s0, matriz_9_aux                                              # Se for igual vai para função que insere na de 9
-
-    matriz_5_aux:
-        addi    $t0, $zero, 0                                                  # $t0 == i = 0
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 24                        # 4(word)*6(positions)
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 24                        # 4(word)*6(positions)
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 24                        # 4(word)*6(positions)
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 24                        # 4(word)*6(positions)
-        sw      $t9, matriz_usuario($t0)
-        j		fim_loop_insere_bombas_aux				# jump to 
-    matriz_7_aux:
-        addi    $t0, $zero, 0                                                  # $t0 == i = 0
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 32                        # 4(word)*8(positions)
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 32                        # 4(word)*8(positions)
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 32                        # 4(word)*8(positions)
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 32                        # 4(word)*8(positions)
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 32                        # 4(word)*8(positions)
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 32                        # 4(word)*8(positions)
-        sw      $t9, matriz_usuario($t0)
-        j		fim_loop_insere_bombas_aux				# jump to 
-    matriz_9_aux:
-        addi    $t0, $zero, 0                                                  # $t0 == i = 0
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 40                        # 4(word)*10(positions)
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 40                        # 4(word)*10(positions)
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 40                        # 4(word)*10(positions)
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 40                        # 4(word)*10(positions)
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 40                        # 4(word)*10(positions)
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 40                        # 4(word)*10(positions)
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 40                        # 4(word)*10(positions)
-        sw      $t9, matriz_usuario($t0)
-        addi    $t0, $t0, 40                        # 4(word)*10(positions)
-        sw      $t9, matriz_usuario($t0)
-        j		fim_loop_insere_bombas_aux				# jump to 
-    fim_loop_insere_bombas_aux:
-        jr $ra # Volta para $ra
-
-insere_bombas:
-    addi    $t0, $zero, 0                                                  # $t0 == i = 0
-    li      $t9, '9'                                                        # 9 é uma bomba
-    addi    $t0, $zero, 0                                                   # $t0 == i = 0
-    li      $t1, 5                                                          # compara se é 5
-    beq     $t1, $s0, matriz_5                                              # Se for igual vai para função que insere na de 5
-    li      $t1, 7                                                          # compara se é 7
-    beq     $t1, $s0, matriz_7                                              # Se for igual vai para função que insere na de 7
-    li      $t1, 9                                                          # compara se é 9
-    beq     $t1, $s0, matriz_9                                              # Se for igual vai para função que insere na de 9
-
-    matriz_5:
-        addi    $t0, $zero, 0                                                  # $t0 == i = 0
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 24                        # 4(word)*6(positions)
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 24                        # 4(word)*6(positions)
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 24                        # 4(word)*6(positions)
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 24                        # 4(word)*6(positions)
-        sw      $t9, matriz_sistema($t0)
-        j		fim_loop_insere_bombas				# jump to 
-    matriz_7:
-        addi    $t0, $zero, 0                                                  # $t0 == i = 0
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 32                        # 4(word)*8(positions)
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 32                        # 4(word)*8(positions)
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 32                        # 4(word)*8(positions)
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 32                        # 4(word)*8(positions)
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 32                        # 4(word)*8(positions)
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 32                        # 4(word)*8(positions)
-        sw      $t9, matriz_sistema($t0)
-        j		fim_loop_insere_bombas				# jump to 
-    matriz_9:
-        addi    $t0, $zero, 0                                                  # $t0 == i = 0
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 40                        # 4(word)*10(positions)
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 40                        # 4(word)*10(positions)
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 40                        # 4(word)*10(positions)
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 40                        # 4(word)*10(positions)
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 40                        # 4(word)*10(positions)
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 40                        # 4(word)*10(positions)
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 40                        # 4(word)*10(positions)
-        sw      $t9, matriz_sistema($t0)
-        addi    $t0, $t0, 40                        # 4(word)*10(positions)
-        sw      $t9, matriz_sistema($t0)
-        j		fim_loop_insere_bombas				# jump to 
-    fim_loop_insere_bombas:
-        jr $ra # Volta para $ra
 
 menu_jogo:
     addi        $t0, $zero, 0                                               # i = 0
@@ -763,7 +650,7 @@ calcula_bombas:
     verifica_diagonal_inferior_direita:
         addi    $t5, $t0, 1                     # i+1
         addi    $t6, $t1, 1                     # j+1
-        slt     $t7, $t5, $zero                 # i+1 < n ? 1 : 0
+        slt     $t7, $t5, $s0                   # i+1 < n ? 1 : 0
         bne     $t7, $zero, verifica_diagonal_inferior_direita_1   # Se j+1 < n
         jr      $ra                             # Return;
         verifica_diagonal_inferior_direita_1:
@@ -823,6 +710,7 @@ calcula_bombas:
         incrementa_8:
             li      $s6, '8'                    # $s6 == 1
             jr      $ra                         # Return;
+            
     incrementa_loop_calcula_bombas_linhas:
         addi    $t1, $zero, 0                   # j = 0;
         addi    $t0, $t0, 1                     # i++;
@@ -834,3 +722,168 @@ calcula_bombas:
 
     encerra_calculo:
         jr      $ra                             # Volta para $ra
+
+
+#########################
+#     Insere Bomba      #
+#########################			
+#
+#Le Numero de bombas (x)
+#Le semente (a)
+#while (bombas < x) 
+#   sorteia linha
+#   sorteia coluna
+#   le posi��o pos = (L X tam + C) * 4
+#   if(pos != 9)
+#    	grava posicao pos = 9
+#   bombas++  
+#	
+insere_bombas:
+		la	$t0, salva_S0
+		sw  $s0, 0($t0)		# salva conteudo de s0 na memoria
+		la	$t0, salva_ra
+		sw  $ra, 0($t0)		# salva conteudo de ra na memoria
+		
+		add $t0, $zero, $a0	# salva a0 em t0
+		add $t1, $zero, $a1	# salva a1 em t1
+
+		li	$v0, 1
+		add $a0, $zero, $a1 #
+		syscall		
+		
+		li	$v0, 4			# 
+		la	$a0, nova_linha
+		syscall			
+
+verifica_menor_que_5:
+		slti $t3, $t1, 5
+		beq	 $t3, $0, verifica_maior_que_9
+		addi $t1, $0, 5			#se tamanho do matriz_sistema menor que 5 atribui 5
+		add  $a1, $0, $t1
+verifica_maior_que_9:
+		slti $t3, $t1, 9
+		bne	 $t3, $0, testa_5
+		addi $t1, $0, 9			
+		add  $a1, $0, $t1
+testa_5:
+		addi $t3, $0, 5
+		bne  $t1, $t3, testa_7
+		addi $t2, $0, 10 # 10 bombas no matriz_sistema 5x5
+		j	 pega_semente
+testa_7:
+		addi $t3, $0, 7
+		bne  $t1, $t3, testa_9
+		addi $t2, $0, 20 # 20 bombas no matriz_sistema 7x7
+		j	 pega_semente
+testa_9:
+		addi $t3, $0, 9
+		bne  $t1, $t3, else_qtd_bombas
+		addi $t2, $0, 40 # 40 bombas no matriz_sistema 9x9
+		j	 pega_semente
+else_qtd_bombas:
+		addi $t2, $0, 25 # seta para 25 bomas no else		
+pega_semente:
+		jal SEED
+		add $t3, $zero, $zero # inicia contador de bombas com 0
+INICIO_LACO:
+		beq $t2, $t3, FIM_LACO
+		
+		add $a0, $zero, $t1 # carrega limite para %
+		jal PSEUDO_RAND
+		add $t4, $zero, $v0	# pega linha sorteada e coloca em t4
+   		jal PSEUDO_RAND
+		add $t5, $zero, $v0	# pega coluna sorteada e coloca em t5
+
+################ imprime valores na tela (para debug somente)
+	
+#		li	$v0, 4			# mostra linha sorteada
+#		la	$a0, posicao
+#		syscall
+#		li	$v0, 1
+#		add $a0, $zero, $t4 #linha
+#		syscall
+#
+#		add $a0, $zero, $t5 #coluna
+#		syscall
+#		
+#		li	$v0, 4			# mostra coluna sorteada
+#		la	$a0, espaco
+#		syscall
+#		li	$v0, 1		
+#		add $a0, $zero, $t3 #linha
+#		syscall
+		
+#######################	
+	
+		mult $t4, $t1
+		mflo $t4
+		add  $t4, $t4, $t5  # calcula (L * tam) + C
+		add  $t4, $t4, $t4  # multtiplica por 2
+		add  $t4, $t4, $t4  # multtiplica por 4
+		add	 $t4, $t4, $t0	# calcula Base + deslocamento
+		lw	$t5, 0($t4)		# Le posicao de memoria LxC
+
+		
+		#addi $t6, $zero, 9
+        li   $t6, '9'
+		beq  $t5, $t6, PULA_ATRIB
+		sw   $t6, 0($t4)
+		addi $t3, $t3, 1		
+PULA_ATRIB:
+		j	INICIO_LACO
+FIM_LACO:
+
+
+#		la   $a0, matriz_sistema
+#		addi $a1, $zero, 7
+#		jal MOSTRA_matriz_sistema	
+		
+		la	$t0, salva_S0
+		lw  $s0, 0($t0)		# recupera conteudo de s0 da mem�ria
+		la	$t0, salva_ra
+		lw  $ra, 0($t0)		# recupera conteudo de ra da mem�ria		
+		jr $ra
+		
+
+
+
+SEED:
+	li	$v0, 4			# lendo semente da funcao rand
+	la	$a0, semente
+	syscall
+	li	$v0, 5		#
+	syscall
+	add	$a0, $zero, $v0	# coloca semente de bombas em a0
+	bne  $a0, $zero, DESVIA
+	lui  $s0,  1		# carrega semente 100001
+ 	ori $s0, $s0, 34465	# 
+	jr $ra	
+DESVIA:
+	add	$s0, $zero, $a0		# carrega semente passada em a0
+	jr $ra
+	
+
+
+#
+#fun��o que gera um n�mero randomico
+#
+ #int rand1(int lim) {
+ # static long a = 100001; 
+ #a = (a * 125) % 2796203; 
+ #return ((a % lim) + 1); 
+ #} // 
+  
+PSEUDO_RAND:
+	addi $t6, $zero, 125  	# carrega 125
+	lui  $t5,  42			# carrega fator: 2796203
+	ori $t5, $t5, 43691 	#-
+	
+	mult  $s0, $t6			# a * 125
+	mflo $s0				# a = (a * 125)
+	div  $s0, $t5			# a % 2796203
+	mfhi $s0				# a = (a % 2796203)
+	div  $s0, $a0			# a % lim
+	mfhi $v0                # v0 = a % lim
+	jr $ra
+	
+### RAND PROFESSOR
