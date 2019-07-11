@@ -31,6 +31,9 @@
     msg_opcao_nao_valida:   .asciiz "\nOpção inválida !\n"
     msg_vitoria:            .asciiz "\nParabéns, você venceu !\n"
     # Vetores(Matrizes)
+    qtd_jogadas:            .word       0
+    i_pos:                  .word       0
+    j_pos:                  .word       0
     matriz_usuario:         .word '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?'              # Matriz que o usuário verá
     matriz_sistema:         .word '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'              # Matriz respectiva ao funcionamento do jogo
 .text
@@ -111,7 +114,9 @@ seleciona_jogar_novamente:
 
 menu_jogo:
     addi        $t0, $zero, 0                                               # i = 0
-    addi        $s3, $zero, 0                                               # $s3 = 0 
+    sw          $t0, i_pos                                                  # i_pos = 0
+    sw          $t0, j_pos                                                  # j_pos = 0
+    addi        $s3, $zero, 0                                               # $s3 = 0
     sub         $s4, $s1, $s5                                               # $s4 = n*n-$s5
     li          $t9, '9'                                                    # 
     la          $s6, matriz_usuario                                         # 
@@ -126,13 +131,15 @@ menu_jogo:
     jr          $ra                                                         # volta ao $ra
     
     loop_menu:
-        beq     $s3, $s4, fim_vitoria                                       # Se todas as jogadas válidas possíveis foram feitas
+        lw          $s3, qtd_jogadas                                        # Carrega a quantidade de jogadas e verifica se é igual a total de posições-bombas
+        beq         $s3, $s4, fim_vitoria                                   # Se todas as jogadas válidas possíveis foram feitas
 
         addi        $sp, $sp, 4                                             # Incrementa o stack pointer
         sw          $ra, 0($sp)                                             # Salva o endereço de retorno no stack pointer
         jal         print_matriz_usuario                                    # Chama o loop_menu e linka a esta linha
         lw          $ra, 0($sp)                                             # Pega o endereço que havia sido salvo no stack pointer e coloca em $ra
         addi        $sp, $sp, -4                                            # Decremente o stack pointer
+        lw          $s3, qtd_jogadas                                        # Carrega novamente, pois foi usado em print
 
         la      $a0, msg_selec_linha                                        # Carrega endereço de seleciona msg_selec_linha
         li      $v0, 4                                                      # Chamada para imprimir string
@@ -141,7 +148,7 @@ menu_jogo:
         li      $v0, 5                                                      # Chamada para ler inteiro
         syscall
 
-        addi    $t0, $v0, -1                                                # Carrega o valor lido em $v1
+        addi    $t0, $v0, -1                                                # Carrega o valor lido em $t0
 
         la      $a0, msg_selec_coluna                                       # Carrega endereço de seleciona msg_selec_coluna
         li      $v0, 4                                                      # Chamada para imprimir string
@@ -162,6 +169,8 @@ menu_jogo:
         j       loop_menu                                                   # Retorna pro loop
         
     verifica_jogada:
+        sw      $t0, i_pos                                                  # Salva i em i_pos
+        sw      $t1, j_pos                                                  # Salva i em j_pos
         mult    $t0, $s0                                                    # i*n
         mflo    $t0                                                         # $v0 = i*n
         add     $t0, $t0, $t1                                               # $t0 = i*n+j
@@ -176,10 +185,29 @@ menu_jogo:
         lw      $t4, 0($t2)                                                 # Load Word (usuario)
 
         beq     $t3, $t9, bomba_encerra_jogo                                # Bomba
+
+        lw      $v0, i_pos                                                  # $v0 = i
+        lw      $v1, j_pos                                                  # $v0 = j
+        
+        add     $a1, $zero, 0                                               # Zero erros de posição inválida
+
+        slt     $a0, $s0, $v0                                               # if (n < i)
+        add     $a1, $a1, $a0                                               # Incrementa em um caso n < j
+        slt     $a0, $v0, $zero                                             # if (i < 0)
+        add     $a1, $a1, $a0                                               # Incrementa em um caso n < i
+
+        slt     $a0, $v1, $zero                                             # if (j < 0)
+        add     $a1, $a1, $a0                                               # Incrementa em um caso n < j
+        slt     $a0, $s0, $v1                                               # if (n < j)
+        add     $a1, $a1, $a0                                               # Incrementa em um caso n < i
+
+        bne     $a1, $zero, opcao_nao_valida                                # Caso tente acessar uma posição inválida
+
         beq     $t3, $t4, opcao_nao_valida                                  # Posição já jogada
         
         addi    $s3, $s3, 1                                                 # Incrementa jogadas válidas
-        
+        sw      $s3, qtd_jogadas                                            # Salva o valor incrementado
+
         sw      $t3, 0($t2)                                                 # Coloca o valor no tabuleiro (usuario)
         beq     $s3, $s4, fim_vitoria                                       # Se todas as jogadas válidas possíveis foram feitas
         jr      $ra                                                         # Volta pro loop
@@ -187,6 +215,8 @@ menu_jogo:
         bomba_encerra_jogo:
             sw      $t1, 0($t2)                                             # Coloca a bomba no tabuleiro
 
+            addi    $s3, $zero, 0                                           # Coloca
+            
             addi    $sp, $sp, 4                                             # Incrementa sp
             sw      $ra, 0($sp)                                             # Coloca o valor em sp
             jal     print_matriz_usuario
@@ -203,7 +233,7 @@ menu_jogo:
             li      $v0, 4                                                  # Chamada pra imprimir string
             syscall
             
-            add     $a0, $s3, $zero                                         # 
+            lw      $a0, qtd_jogadas                                        # $a0 = qtd_jogadas
             li      $v0, 1                                                  # Chamada para imprimir int
             syscall
 
@@ -710,7 +740,7 @@ calcula_bombas:
         incrementa_8:
             li      $s6, '8'                    # $s6 == 1
             jr      $ra                         # Return;
-            
+
     incrementa_loop_calcula_bombas_linhas:
         addi    $t1, $zero, 0                   # j = 0;
         addi    $t0, $t0, 1                     # i++;
