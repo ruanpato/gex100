@@ -213,7 +213,7 @@ menu_jogo:
         jr      $ra                                                         # Volta pro loop
 
         bomba_encerra_jogo:
-            sw      $t1, 0($t2)                                             # Coloca a bomba no tabuleiro
+            sw      $t3, 0($t2)                                             # Coloca a bomba no tabuleiro
 
             addi    $s3, $zero, 0                                           # Coloca
             
