@@ -62,5 +62,5 @@ Padrões de codificação de instruções:
 
 #### Autores ####
 
-* **Ruan Pato** - *Exercícios e trabalhos feitos* - [Ruan Pato](https://github.com/ruanpato)
-* **Me. Luciano Lores Caimi** - *Professor*
+- **[Ruan Pato](https://github.com/ruanpato)** - *Criador do repositório, descrições em README.md e resoução de exercícios e trabalhos*.
+- [Me. Luciano Lores Caimi](https://github.com/lcaimi) - *Professor*

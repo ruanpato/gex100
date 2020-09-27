@@ -3,11 +3,16 @@
 Diretório criado para armazenar informações sobre Assembly MIPS.
 
 ## Sumário ##
-**[01.](#01-Instru%C3%A7%C3%B5es-para-implementa%C3%A7%C3%A3o) Instruções para implementação.**  
-**[02.](#02-Pol%C3%ADticas) Políticas**  
-**[03.](#03-Padr%C3%B5es-de-codifica%C3%A7%C3%A3o) Padrões de codificação**  
-**[04.](#04-Instru%C3%A7%C3%B5es-de-uso) Instruções de uso**  
-**[05.](#05-Observa%C3%A7%C3%B5es) Observações**  
+
+- [Assembly MIPS](#assembly-mips)
+  - [Sumário](#sumário)
+  - [01. Instruções para implementação](#01-instruções-para-implementação)
+  - [02. Políticas](#02-políticas)
+  - [03. Padrões de codificação](#03-padrões-de-codificação)
+  - [04. Instruções de uso](#04-instruções-de-uso)
+  - [05. Observações](#05-observações)
+  - [06. Ferramentas utilizadas e Bibliografia](#06-ferramentas-utilizadas-e-bibliografia)
+  - [07. Autores](#07-autores)
 
 ## 01. Instruções para implementação ##
 Especificações:  
@@ -28,15 +33,15 @@ OBS1: Os valores e endereços devem ser apresentados em hexadecimal ou binário.
 OBS2: Ao ler um endereço deve informar se encontrou na cache ou não. Qual o número do bloco a que se refere o endereço, qual o quadro na cache que está mapeado e o deslocamento do mesmo.  
 OBS3: Os contadores da política de substituição possuem 3 bits.
 
-### 02. Políticas ###
+## 02. Políticas ##
 * Mapeamento Associativo por conjuntos(4).
 * Escrita no retorno.
 * LRU.
 
-### 03. Padrões de codificação ###
+## 03. Padrões de codificação ##
 [PEP8](https://www.python.org/dev/peps/pep-0008/)
 
-### 04. Instruções de uso ###
+## 04. Instruções de uso ##
 
 **Pré-requisitos:** 
 * Python 3
@@ -68,11 +73,11 @@ OBS3: Os contadores da política de substituição possuem 3 bits.
   * Após isso basta navegar pelo terminal até onde os arquivos código fonte deste projeto se encontram e executar o arquivo main<i></i>.py, escreva no terminal: *python main<i></i>.py*.
 * **Observação:**  Caso estas instruções não funcionem para você pesquise no google por "Como instalar a biblioteca bitarray no 'nome do sistema operacional em uso' ". Ou visite a página do [bitarrray](https://pypi.org/project/bitarray/) onde há uma explicação de como instalar esta biblioteca diretamente do código fonte.
 
-### 05. Observações ###
+## 05. Observações ##
 
-Este projeto foi desenvolvido no diretório [simulador_cache](https://github.com/ruanpato/gex100/tree/master/simulador_cache) dentro repositório [gex100](https://github.com/ruanpato/gex100/) criado pelo aluno [Ruan Pato](https://github.com/ruanpato), este repositório deixará de ser privado a partir de 08/07/2019 (dd/mm/yyyy).
+Este projeto foi desenvolvido no diretório [simulador_cache](https://github.com/ruanpato/mips/tree/master/simulador_cache/associativeMapping/) dentro repositório [mips](https://github.com/ruanpato/mips/) criado pelo aluno [Ruan Pato](https://github.com/ruanpato), este repositório deixará de ser privado a partir de 08/07/2019 (dd/mm/yyyy).
 
-### Ferramentas utilizadas e Bibliografia ###
+## 06. Ferramentas utilizadas e Bibliografia ##
 
 * [Python](https://python.org/) - Interpretador Python.
 * **Bibliotecas Python:**
@@ -80,8 +85,8 @@ Este projeto foi desenvolvido no diretório [simulador_cache](https://github.com
 
 PATTERSON, David A.; HENNESSY, John L. Organização e projeto de computadores: A interface hardware/sofware. 3. ed. Rio de Janeiro: Elsevier, 2005. ISBN 9788535215212.
 
-#### Autores ####
+## 07. Autores ##
 
-* **Guilherme Sabino** - *Codificação do projeto* - [Guilherme Sabino](https://github.com/fersasil)
-* **Ruan Pato** - *Codificação do projeto* - [Ruan Pato](https://github.com/ruanpato)
-* **Professor Me. Luciano Lores Caimi** - *Descrição*
+- **[Ruan Pato](https://github.com/ruanpato)** - *Criador do repositório, descrições em README.md e resoução de exercícios e trabalhos*.
+- [Guilherme Sabino](https://github.com/fersasil) - *Codificação do projeto**
+- [Me. Luciano Lores Caimi](https://github.com/lcaimi) - *Professor*
